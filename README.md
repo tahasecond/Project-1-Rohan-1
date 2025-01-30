@@ -8,11 +8,12 @@
     npm install
     npm run build
     ```
-- In the `server` directory, run:
+- In root directory, run:
     ```bash
     python3 manage.py migrate
     ```
 
 ## Start the App  
+In root directory, run: 
 ```bash
 python3 manage.py runserver
