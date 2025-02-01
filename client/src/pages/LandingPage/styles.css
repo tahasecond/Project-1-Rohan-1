@@ -1,0 +1,10 @@
+
+.landing-page {
+  /* This padding pushes the content down so it isn't hidden behind the fixed navbar */
+  padding-top: 60px;
+}
+
+/* if we want to add it to the content container */
+.content {
+  padding-top: 20px;
+}
