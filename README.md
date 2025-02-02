@@ -2,7 +2,7 @@
 **CS 2340 Group 1**
 
 ## Prerequisites  
-- Install **Python 3**, **Django**, **Node.js**, and **npm**  
+- Have **Python 3**, **Django**, **Node.js**, and **npm** installed
 - In the `client` directory, run:
     ```bash 
     npm install
