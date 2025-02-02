@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate} from "react-router-dom";
 import './styles.css';
 
 function SearchBar({ onSearch }) {
   const [query, setQuery] = useState('');
+  const navigate = useNavigate();
 
   // Handle input changes and update state
   const handleInputChange = (event) => {
@@ -13,9 +15,7 @@ function SearchBar({ onSearch }) {
   // and call the onSearch callback (if provided) with the current query.
   const handleSearch = (event) => {
     event.preventDefault();
-    if (onSearch) {
-      onSearch(query);
-    }
+    navigate(`/search?q=${encodeURIComponent(query)}`);
   };
 
   return (
