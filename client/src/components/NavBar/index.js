@@ -2,7 +2,12 @@ import React from 'react';
 import logoImage from '../../assets/images/buzz.svg.png';
 import './styles.css';
 
-function NavBar() {
+function NavBar( {setIsAuthenticated} ) {
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsAuthenticated(false);
+  }
+
   return (
     <nav className="navbar">
       {/* Clickable logo button that redirects to the homepage */}
@@ -18,8 +23,7 @@ function NavBar() {
       </ul>
 
       <div className="navbar-auth">
-        <button>Sign In</button>
-        <button>Register</button>
+        <button onClick = {handleLogout}> Log Out </button>
       </div>
     </nav>
   );
