@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './styles.css';
 import logoImage from '../../assets/images/buzz.svg.png';
@@ -12,14 +12,13 @@ function Login({ onLogin }) {
         onLogin(); // Calling the onLogin function from App.js
     }
     return (
-        <div > 
-            <div> 
-                <img src = {logoImage} alt = "GT Movies Logo" />
-                
+        <div className = 'loginBox'> 
+            <div className = 'top'> 
+                <img className = 'logo'src = {logoImage} alt = "GT Movies Logo" />
                 <h1> Sign In</h1>
             </div>
             
-            <form onSubmit = {handleSubmit}>
+            <form className = 'form' onSubmit = {handleSubmit}>
                 <label> 
                     Email
                     <input
@@ -30,6 +29,7 @@ function Login({ onLogin }) {
                     />
                 </label> 
                 <label>
+                    Password
                     <input
                         type = "password"
                         value = {password}
