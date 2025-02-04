@@ -21,6 +21,7 @@ function NavBar( {setIsAuthenticated} ) {
             <li><Link to="/">Home</Link></li>
             <li><Link to="/movies">Movies</Link></li>
             <li><Link to="/reviews">My Reviews</Link></li>
+            <li><Link to="/checkout">Checkout</Link></li>
         </ul>
 
       <div className="navbar-auth">

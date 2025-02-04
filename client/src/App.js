@@ -1,5 +1,6 @@
 import './App.css';
 import LandingPage from './pages/LandingPage';
+import CheckOut from './pages/CheckOut';
 
 import React, {useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
@@ -27,6 +28,11 @@ function App() {
         {/* mapping routes to components */}
         <Route path = '/login' element = {<Login onLogin = {handleLogin} />} />
         <Route path = '/signup' element = { <SignUp/> } />
+        <Route path = '/checkout' element = {
+          isAuthenticated 
+            ? <CheckOut setIsAuthenticated={setIsAuthenticated} />
+            : <Navigate to="/login" />
+        } />
 
         <Route
           path="/"
