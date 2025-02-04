@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import './styles.css';
 
 function SearchBar({ onSearch }) {
@@ -15,7 +15,9 @@ function SearchBar({ onSearch }) {
   // and call the onSearch callback (if provided) with the current query.
   const handleSearch = (event) => {
     event.preventDefault();
-    navigate(`/search?q=${encodeURIComponent(query)}`);
+    if (query.trim()) {  // Only navigate if query is not empty
+      navigate(`/search?q=${encodeURIComponent(query)}`);
+    }
   };
 
   return (
@@ -26,6 +28,8 @@ function SearchBar({ onSearch }) {
         value={query}
         onChange={handleInputChange}
         className="search-input"
+        required
+        minLength="1"
       />
       <button type="submit" className="search-button">Search</button>
     </form>
