@@ -120,8 +120,35 @@ function LandingPage({ setIsAuthenticated }) {
   return (
       <div className="landing-page">
         <NavBar setIsAuthenticated={setIsAuthenticated}/>
+
+
         <div className="content">
           <h1>Welcome to GT Movies</h1>
+          <div id="aboutContainer">
+            <h3>GT MOVIES STORE LETS YOU...</h3>
+            <div id="aboutBoxes">
+              <ul>
+                <li>
+                  <div className="aboutBox">Quickly find movies by title and explore detailed information.</div>
+                </li>
+                <li>
+                  <div className="aboutBox">Get the latest movie selections and deals.</div>
+                </li>
+                <li>
+                  <div className="aboutBox">Enjoy a smooth and responsive experience on any device.</div>
+                </li>
+                <li>
+                  <div className="aboutBox">Register, log in, and manage your shopping cart with ease.</div>
+                </li>
+                <li>
+                  <div className="aboutBox">Browse, search, and shop for your favorite movies effortlessly.</div>
+                </li>
+                <li>
+                  <div className="aboutBox">Write and share reviews!</div>
+                </li>
+              </ul>
+            </div>
+          </div>
           <SearchBar onSearch={handleSearch}/>
           <div className="movies-container">
             {movies.map((movie) => (
@@ -129,33 +156,8 @@ function LandingPage({ setIsAuthenticated }) {
             ))}
           </div>
         </div>
-        <div id="aboutContainer">
-          <h3>GT MOVIES STORE LETS YOU...</h3>
-          <div id="aboutBoxes">
-            <ul>
-              <li>
-                <div className="aboutBox">Quickly find movies by title and explore detailed information.</div>
-              </li>
-              <li>
-                <div className="aboutBox">Get the latest movie selections and deals.</div>
-              </li>
-              <li>
-                <div className="aboutBox">Enjoy a smooth and responsive experience on any device.</div>
-              </li>
-              <li>
-                <div className="aboutBox">Register, log in, and manage your shopping cart with ease.</div>
-              </li>
-              <li>
-                <div className="aboutBox">Browse, search, and shop for your favorite movies effortlessly.</div>
-              </li>
-              <li>
-                <div className="aboutBox">Write and share reviews!</div>
-              </li>
-            </ul>
-          </div>
-        </div>
       </div>
-  );
+  )
 }
 
 export default LandingPage;
