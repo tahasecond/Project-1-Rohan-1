@@ -22,9 +22,9 @@ from .views import index
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", index, name="index"),  # index.html root url
-    re_path(
-        r"^.*$", TemplateView.as_view(template_name="index.html")
-    ),  # serve index.html for all other routes
     path("api/movies/", get_movies, name="get_movies"),
+    # path("", index, name="index"),  # index.html root url
+    re_path(
+        r"^(?!api/).*", TemplateView.as_view(template_name="index.html")
+    ),  # serve index.html for all other routes
 ]
