@@ -15,15 +15,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, re_path
+from django.db import router
+from django.urls import path, re_path, include
 from django.views.generic import TemplateView
 from .views import get_movies  # importing static url
-from .views import index
+from rest_framework import routers
+from server import views
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/movies/", get_movies, name="get_movies"),
-    # path("", index, name="index"),  # index.html root url
     re_path(
         r"^(?!api/).*", TemplateView.as_view(template_name="index.html")
     ),  # serve index.html for all other routes

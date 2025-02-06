@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from .models import Movie
+from .models import User
 
-
-class MovieSerializer(serializers.ModelSerializer):
+#Serializers turn Models (databases) into JSON format
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Movie
-        fields = ["id", "title", "poster_path"]
+        model = User
+        fields = ('firstname', 'lastname', 'email', 'password')
