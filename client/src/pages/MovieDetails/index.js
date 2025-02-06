@@ -1,6 +1,6 @@
 import NavBar from "../../components/NavBar";
 import "./styles.css";
-import {useState} from "react";
+import React, {useState} from "react";
 
 function MovieDetails({ setIsAuthenticated }) {
     const [movies, setMovies] = useState([]); // setting up movie request
@@ -90,6 +90,7 @@ function MovieDetails({ setIsAuthenticated }) {
 
     return(
         <div>
+            <NavBar setIsAuthenticated={setIsAuthenticated}/>
             <h1>Hello World!</h1>
         </div>
     );
