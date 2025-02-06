@@ -13,7 +13,7 @@ def index(request):
 
 #Creates the api json so that we can fetch it from frontend
 def get_movies(request):
-    url = f"https://api.themoviedb.org/3/movie/popular?api_key={"b7e53cd3f6fdf95ed3ec34f7bbf27823"}&language=en-US&page=1"
+    url = f"https://api.themoviedb.org/3/movie/popular?api_key=b7e53cd3f6fdf95ed3ec34f7bbf27823&language=en-US&page=1"
     response = requests.get(url)
     if response.status_code == 200:
         data = response.json()
