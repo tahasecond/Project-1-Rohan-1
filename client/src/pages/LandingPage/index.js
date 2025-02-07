@@ -121,7 +121,6 @@ function LandingPage({ setIsAuthenticated }) {
       <div className="landing-page">
         <NavBar setIsAuthenticated={setIsAuthenticated}/>
 
-
         <div className="content">
           <h1>Welcome to GT Movies</h1>
           <div id="aboutContainer">

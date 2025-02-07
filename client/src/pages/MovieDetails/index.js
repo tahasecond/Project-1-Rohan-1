@@ -1,4 +1,5 @@
 import NavBar from "../../components/NavBar";
+import ReviewSection from "../../components/ReviewSection";
 import "./styles.css";
 import React, {useState} from "react";
 
@@ -107,6 +108,7 @@ function MovieDetails({ setIsAuthenticated }) {
               </div>
             </div>
           </div>
+          <ReviewSection />
         </div>
     );
 }
