@@ -99,6 +99,7 @@ function MovieDetails({ setIsAuthenticated }) {
                 later for an expansive new voyage alongside a crew of unlikely seafarers. After hearing from her
                 way finding ancestors, Moana must journey into long-lost waters for an adventure. Warning: Some
                 flashing-lights scenes in this film may affect photosensitive viewers.</p> <!-- Make changes to description here -->
+              <p id="rating">Rating: 9.8</p> <!-- Wasn't sure how the ratings were supposed to look but you can add them here. -->
               <h4 id="movie-price">$49.99</h4>
               <div className="button-group">
                 <button className="btn">Buy Now!</button>

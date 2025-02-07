@@ -7,7 +7,6 @@
     <list default="true" id="3c76a43a-01b0-4edd-b7a8-fe3d70f48d47" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/pages/MovieDetails/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/MovieDetails/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/pages/MovieDetails/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/MovieDetails/styles.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,6 +17,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="JavaScript File" />
+        <option value="CSS File" />
       </list>
     </option>
   </component>
@@ -30,12 +30,12 @@
     &quot;assignee&quot;: &quot;DagimTibebeselassie&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/tahasecond/Project-1-Rohan-1.git",
-    "accountId": "37bbca4c-28d6-423f-bfe4-19d73448e99f"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/tahasecond/Project-1-Rohan-1.git&quot;,
+    &quot;accountId&quot;: &quot;37bbca4c-28d6-423f-bfe4-19d73448e99f&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
 }</component>
@@ -44,23 +44,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Django Server.Project-1-Rohan-1.executor": "Run",
-    "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.pycharm.django.structure.promotion.once.per.project": "true",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Django Server.Project-1-Rohan-1.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.pycharm.django.structure.promotion.once.per.project&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/dagim/abo-application/ABO Application&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="Project-1-Rohan-1" type="Python.DjangoServer" factoryName="Django server">
       <module name="Project-1-Rohan-1" />
@@ -108,7 +110,13 @@
       <workItem from="1738872877464" duration="964000" />
       <workItem from="1738873892071" duration="220000" />
       <workItem from="1738874137277" duration="732000" />
-      <workItem from="1738886452981" duration="2568000" />
+      <workItem from="1738886452981" duration="3661000" />
+      <workItem from="1738899837454" duration="85000" />
+      <workItem from="1738899951722" duration="332000" />
+      <workItem from="1738946295495" duration="1549000" />
+      <workItem from="1738947891220" duration="269000" />
+      <workItem from="1738948173234" duration="224000" />
+      <workItem from="1738948412348" duration="47000" />
     </task>
     <servers />
   </component>
