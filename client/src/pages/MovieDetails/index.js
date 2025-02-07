@@ -91,7 +91,21 @@ function MovieDetails({ setIsAuthenticated }) {
     return(
         <div>
             <NavBar setIsAuthenticated={setIsAuthenticated}/>
-            <h1>Hello World!</h1>
+          <div className="movie-container" style="background-image: url('');"> <!-- add image here -->
+            <div className="overlay"></div>
+            <div className="movie-content">
+              <h1 id="movie-title">Movie Title</h1>
+              <p id="description">Walt Disney Animation Studios’ animated musical reunites Moana and Maui three years
+                later for an expansive new voyage alongside a crew of unlikely seafarers. After hearing from her
+                way finding ancestors, Moana must journey into long-lost waters for an adventure. Warning: Some
+                flashing-lights scenes in this film may affect photosensitive viewers.</p> <!-- Make changes to description here -->
+              <h4 id="movie-price">$49.99</h4>
+              <div className="button-group">
+                <button className="btn">Buy Now!</button>
+                <button className="btn">Add to Cart</button>
+              </div>
+            </div>
+          </div>
         </div>
     );
 }
