@@ -8,11 +8,9 @@ import requests
 from django.http import JsonResponse
 from django.conf import settings
 
-
 def index(request):
     return render(request, "index.html")
-
-
+    
 # Creates the api json so that we can fetch it from frontend
 def get_movies(request):
     query = request.GET.get("search", "")  # Get the search query from URL parameters
@@ -66,10 +64,3 @@ def get_movie_details(request, movie_id):
         }
         return JsonResponse(movie)
     return JsonResponse({"error": "Failed to fetch movie details"}, status=500)
-
-
-# Database retrieval for frontend
-# Viewset allows for CRUD operations
-# class UserView(viewsets.ModelViewSet()):
-#    serializer_class = UserSerializer
-#    queryset = User.objects.all()
