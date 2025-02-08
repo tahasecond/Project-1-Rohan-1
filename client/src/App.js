@@ -1,6 +1,7 @@
 import "./App.css";
 import LandingPage from "./pages/LandingPage";
 import CheckOut from "./pages/CheckOut";
+import MovieDetails from "./pages/MovieDetails";
 
 import React, { useState, useEffect } from "react";
 import {
@@ -34,6 +35,16 @@ function App() {
         {/* mapping routes to components */}
         <Route path="/login" element={<Login onLogin={handleLogin} />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route
+          path="/moviedetails/:id"
+          element={
+            isAuthenticated ? (
+              <MovieDetails setIsAuthenticated={setIsAuthenticated} />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
         <Route
           path="/checkout"
           element={
