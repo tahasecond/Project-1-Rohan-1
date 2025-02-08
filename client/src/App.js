@@ -2,6 +2,7 @@ import "./App.css";
 import LandingPage from "./pages/LandingPage";
 import CheckOut from "./pages/CheckOut";
 import MovieDetails from "./pages/MovieDetails";
+import SearchPage from "./pages/SearchPage";
 
 import React, { useState, useEffect } from "react";
 import {
@@ -42,6 +43,16 @@ function App() {
               <MovieDetails setIsAuthenticated={setIsAuthenticated} />
             ) : (
               <Navigate to="/login" />
+            )
+          }
+        />
+        <Route
+          path="/search"
+          element={
+            isAuthenticated ? (
+              <SearchPage setIsAuthenticated={setIsAuthenticated} />
+            ) : (
+              <Navigate to="/login" replace />
             )
           }
         />

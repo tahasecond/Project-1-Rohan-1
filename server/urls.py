@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.db import router
 from django.urls import path, re_path, include
 from django.views.generic import TemplateView
-from .views import get_movies  # importing static url
+from .views import get_movies, get_movie_details  # importing static url
 from rest_framework import routers
 from server import views
 
@@ -26,6 +26,7 @@ from server import views
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/movies/", get_movies, name="get_movies"),
+    path("api/movies/<int:movie_id>/", get_movie_details, name="get_movie_details"),
     re_path(
         r"^(?!api/).*", TemplateView.as_view(template_name="index.html")
     ),  # serve index.html for all other routes

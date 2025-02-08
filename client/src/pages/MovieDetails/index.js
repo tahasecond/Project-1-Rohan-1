@@ -15,23 +15,23 @@ function MovieDetails({ setIsAuthenticated }) {
   useEffect(() => {
     fetchMovies();
   }, [id]); //request movies
+
   const fetchMovies = async () => {
     try {
       console.log("Fetching movie...");
-      const response = await fetch(`http://localhost:8000/api/movies/`);
+      const response = await fetch(`http://localhost:8000/api/movies/${id}/`); // Fetch the movie by ID
       if (!response.ok) {
-        throw new Error("Failed to fetch movies");
+        throw new Error("Failed to fetch movie details");
       }
       const data = await response.json();
 
-      // Find the movie by id
-      const movieDetails = data.find((movie) => movie.id === parseInt(id)); // filter by id
-      setMovie(movieDetails);
+      // Directly set the movie details since the response is already a single movie object
+      setMovie(data);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching movie details:", error);
-      setError(error.message); // Set error state
-      setLoading(false); // Set loading to false if there's an error
+      setError(error.message);
+      setLoading(false);
     }
   };
 
