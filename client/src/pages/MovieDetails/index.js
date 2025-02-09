@@ -14,6 +14,7 @@ function MovieDetails({ setIsAuthenticated }) {
 
   useEffect(() => {
     fetchMovies();
+    window.scrollTo(0, 0);
   }, [id]); //request movies
 
   const fetchMovies = async () => {

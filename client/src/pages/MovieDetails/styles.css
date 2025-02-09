@@ -7,12 +7,13 @@
 .movie-container {
     position: relative;
     width: 100vw;
-    height: 90vh;
+    min-height: 90vh;
     background-size: cover;
     background-position: center;
     display: flex;
+    justify-content: center;
     align-items: flex-start;
-    padding-left: 5%;
+    padding: 0 5% 50px;
     color: white;
 }
 .overlay {
@@ -26,22 +27,26 @@
 .movie-content {
     padding-top: 10%;
     position: relative;
-    max-width: 1300px;
+    max-width: 1000px;
     z-index: 2;
     animation: fadeInMoveUp 1.5s ease-in;
+    text-align: center;
 }
 
 #movie-title {
-    font-size: 150px;
+    font-size: 5rem;
+    margin-bottom: 30px;
 }
 
 #description {
-    font-size: 30px;
-    padding-bottom: 20px;
+    font-size: 1.5rem;
+    padding-bottom: 30px;
+    line-height: 1.7;
 }
 
 #movie-price {
-    font-size: 50px;
+    font-size: 2.5rem;
+    margin: 30px 0;
 }
 
 @keyframes fadeInMoveUp {
@@ -54,20 +59,22 @@
 }
 
 .button-group {
-    margin-top: 20px;
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
 }
 .btn {
-    height: 80px;
-    width: 200px;
-    border-radius: 10px;
-    padding: 10px 20px;
-    font-size: 16px;
-    font-weight: 500;
+    height: 90px;
+    width: 220px;
+    border-radius: 12px;
+    padding: 15px 25px;
+    font-size: 1.2rem;
+    font-weight: 600;
     color: white;
     background-color: #b3a369;
     border: none;
     cursor: pointer;
-    margin-right: 10px;
     transition: background 0.3s;
 }
 .btn:hover {

@@ -31,11 +31,21 @@ a{
     padding: 10px 20px;
 }
 .review-heading span{
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     color: #252525;
-    margin-bottom: 10px;
+    margin-bottom: 25px;
     letter-spacing: 2px;
     text-transform: uppercase;
+    font-weight: 500;
+}
+.review-heading textarea {
+    margin: 20px 0 40px;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 800px;
+    resize: vertical;
 }
 .review-box-container{
     display: flex;
