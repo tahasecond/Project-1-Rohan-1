@@ -32,6 +32,7 @@ class Review(models.Model):
     user = models.ForeignKey(User, on_delete = models.CASCADE)
     movie = models.ForeignKey(Movie, on_delete = models.CASCADE)
     comment = models.TextField()
+    rating = models.IntegerField()
 
 # Foreign Key creates a many-to-one relationship
 # models.CASCADE deletes any associated records related to a user that is also deleted
