@@ -7,10 +7,17 @@ import requests
 from django.http import JsonResponse
 from django.conf import settings
 
+<<<<<<< HEAD
 
 def index(request):
     return render(request, "index.html")
 
+=======
+def index(request):
+    return render(request, "index.html")
+    
+# Creates the api json so that we can fetch it from frontend
+>>>>>>> parent of 0f2ac24 (Merge branch 'main' of https://github.com/tahasecond/Project-1-Rohan-1)
 def get_movies(request):
     url = f"https://api.themoviedb.org/3/movie/popular?api_key={"b7e53cd3f6fdf95ed3ec34f7bbf27823"}&language=en-US&page=1"
     response = requests.get(url)

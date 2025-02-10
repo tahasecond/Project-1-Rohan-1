@@ -17,13 +17,24 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path
 from django.views.generic import TemplateView
+<<<<<<< HEAD
 from .views import get_movies  # importing static url
 from .views import index
+=======
+from .views import get_movies, get_movie_details  # importing static url
+from rest_framework import routers
+from server import views
+>>>>>>> parent of 0f2ac24 (Merge branch 'main' of https://github.com/tahasecond/Project-1-Rohan-1)
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/movies/", get_movies, name="get_movies"),
+<<<<<<< HEAD
     # path("", index, name="index"),  # index.html root url
+=======
+    path("api/movies/<int:movie_id>/", get_movie_details, name="get_movie_details"),
+>>>>>>> parent of 0f2ac24 (Merge branch 'main' of https://github.com/tahasecond/Project-1-Rohan-1)
     re_path(
         r"^(?!api/).*", TemplateView.as_view(template_name="index.html")
     ),  # serve index.html for all other routes
