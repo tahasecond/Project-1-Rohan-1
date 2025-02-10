@@ -10,7 +10,7 @@ from django.conf import settings
 
 # for authentication
 from rest_framework import status
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 from rest_framework.views import APIView
 from .models import User, Token
 from .serializers import UserSerializer, TokenSerializer
@@ -24,46 +24,57 @@ def index(request):
 
 class RegistrationView(APIView):
     def post(self, request, format = None):
-        request.data["password"] = make_password(
-            password = request.data["password"], salt = SALT
-        )
+        email = request.data.get("email")
+        
+        if User.objects.filter(email = email).exists():
+            return Response(
+                {"success": False, "message": "Email already exists"},
+                status = status.HTTP_400_BAD_REQUEST
+            )
 
-        serializer = UserSerializer(data = request.data)
+        user_data = request.data.copy()
+        user_data["password"] = make_password(password = user_data["password"], salt = SALT)
+        serializer = UserSerializer(data = user_data)
+        
         if serializer.is_valid():
-            serializer.save()
+            user = serializer.save()
+            token = Token.objects.create(user = user)
             return Response(
-                  {"success": True, "message": "You are now registered on our website!"},
+                  {"success": True, "message": "You are now registered on our website!", "token" : token.key},
                 status = status.HTTP_200_OK,
             )
-        else:
-            error_msg = ""
-            for key in serializer.errors:
-                error_msg += serializer.errors[key][0]
-            return Response(
-                {"success": False, "message": error_msg},
-                status = status.HTTP_200_OK,
-            )
+        
+        error_msg = ""
+        for key in serializer.errors:
+            error_msg += serializer.errors[key][0]
+        return Response(
+            {"success": False, "message": error_msg},
+            status = status.HTTP_200_OK,
+        )
 
 class LoginView(APIView):
     def post(self, request, format = None) :
-        email = request.data("email")
-        password = request.data("password")
-        hashed_password = make_password(password = password, salt = SALT)
-        user = User.objects.get(email = email)
-        if user is None or user.password != hashed_password:
-            return Response(
-                {
-                    "success": False,
-                    "message": "Invalid Login Credentials!",
-                },
-                status = status.HTTP_200_OK,
+        email = request.data.get("email")
+        password = request.data.get("password")
+        
+        try: 
+            user = User.objects.get(email = email)
+            if check_password(password, user.password):
+                token, created = Token.objects.get_or_create(user = user)
+                return Response (
+                    {"success": True, "message": "You are now logged in!", "token": token.key},
+                    status = status.HTTP_200_OK
+                )
+            else:
+                return Response (
+                    {"success": False, "message": "Invalid Login Credentials!"},
+                    status = status.HTTP_401_UNAUTHORIZED,
+                )
+        except:
+            return Response (
+                {"success": False, "message": "User not found"},
+                status = status.HTTP_404_NOT_FOUND
             )
-        else:
-            return Response(
-                {"success": True, "message": "You are now logged in!"},
-                status = status.HTTP_200_OK,
-            )
-
 
 # Creates the api json so that we can fetch it from frontend
 def get_movies(request):
