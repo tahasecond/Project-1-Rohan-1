@@ -52,18 +52,43 @@
   border-radius: 4px;
 }
 
-.navbar-auth button {
-  background: transparent;
-  border: 1px solid #fff;
-  color: #fff;
-  margin-left: 0.5rem;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background 0.3s, color 0.3s;
+.profile-dropdown {
+  position: relative;
+  display: inline-block;
+  float: right;
+  margin-bottom: 8px;
 }
 
-.navbar-auth button:hover {
-  background: #fff;
-  color: #333;
+.profile-icon {
+  font-size: 2rem;
+  cursor: pointer;
+  color: #fff;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #444;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  min-width: 150px;
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown-item {
+  color: white;
+  text-decoration: none;
+  padding: 10px;
+  cursor: pointer;
+  transition: background 0.3s;
+  text-align: left;
+  border: none;
+  background: none;
+}
+
+.dropdown-item:hover {
+  background-color: #555;
 }
