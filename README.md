@@ -14,7 +14,6 @@
   ```bash
    pip3 install django-cors-headers
    pip3 install djangorestframework
-   npm install --save @fortawesome/fontawesome-free
   ```
 
 ## Start the App
