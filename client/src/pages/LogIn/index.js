@@ -1,50 +1,48 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { loginUser } from '../../api';
+
 import './styles.css';
-import logoImage from '../../assets/images/buzz.svg.png';
+import logoImage from "../../assets/images/buzz.svg.png";
 
-function Login({ onLogin }) {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+function Login({ setIsLoggedIn }) {
+    const [formData, setFormData] = useState({
+        email: "",
+        password: ""
+    });
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
 
-    const handleSubmit = event => {
-        event.preventDefault();
-        onLogin(); // Calling the onLogin function from App.js
-    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const response = await loginUser(formData);
+
+        if (response.success) {
+            localStorage.setItem("token", response.token);
+            setIsLoggedIn(true);
+            navigate("/");
+        } else {
+            setError(response.message);
+        }    
+    };
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
     return (
         <div className = 'loginBox'> 
-            <div className = 'top'> 
-                <img className = 'logo'src = {logoImage} alt = "GT Movies Logo" />
-                <h1> Sign In</h1>
-            </div>
-            
-            <form className = 'form' onSubmit = {handleSubmit}>
-                <label> 
-                    Email
-                    <input
-                        type = "email"
-                        value = {email}
-                        onChange = {(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </label> 
-                <label>
-                    Password
-                    <input
-                        type = "password"
-                        value = {password}
-                        onChange = {(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </label>
-                <button type = "submit">
-                    Sign In
-                </button>
-            </form>
+            <h1>Sign In</h1>
+            <img src = {logoImage} alt = "Buzz Logo" className = "logo" />
 
-            <div> 
-                Don't have an account? <Link to = "/signup"> Sign Up </Link>
-            </div>
+            {error && <p style={{ color: "red" }}>{error}</p>}
+            <form className="form" onSubmit={handleSubmit}>
+                <input type="email" name="email" placeholder="Email" onChange={handleChange} required />
+                <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
+                <button type="submit">Sign In</button>
+                <div> Don't have an account? <Link to = "/signup"> Sign Up </Link> </div>
+            </form>
         </div>
     )
 }

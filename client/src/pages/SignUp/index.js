@@ -1,67 +1,48 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { registerUser } from '../../api';
+
 import "./styles.css";
 import logoImage from "../../assets/images/buzz.svg.png";
 
 function SignUp() {
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [formData, setFormData] = useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: ""
+    })
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
 
-    const handleSubmit = event => {
-        event.preventDefault();
-        // backend django logic
-    }
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const response = await registerUser(formData);
+        if (response.success) {
+            alert(response.message);
+            navigate("/login");
+        } else {
+            setError(response.message);
+        }
+    };
+
     return (
         <div className = 'loginBox'> 
-            <div className = 'top'> 
-                <img className = 'logo'src = {logoImage} alt = "GT Movies Logo" />
-                <h1> Sign Up</h1>
-            </div>
-            
-            <form className = 'form' onSubmit = {handleSubmit}>
-                <label>
-                    First Name
-                    <input 
-                        type = "text"
-                        required
-                        value = {firstName}
-                        onChange = {(e) => setFirstName(e.target.value)}
-                    />
-                </label>
-
-                <label>
-                    Last Name
-                    <input 
-                        type = "text"
-                        required
-                        value = {lastName}
-                        onChange = {(e) => setLastName(e.target.value)}
-                    />
-                </label>
-                <label>
-                    Email
-                    <input
-                        type = "email"
-                        required
-                        value = {email}
-                        onChange = {(e) => setEmail(e.target.value)}
-                    />
-                </label>    
-                <label>
-                    Password
-                    <input
-                    type = "password"
-                    required
-                    value = {password}
-                    onChange = {(e) => setPassword(e.target.value)}
-                    />
-                </label>      
-            </form>
-
-                <button type = "submit"> Sign Up </button>
+            <h1> Sign Up </h1> 
+            <img src = {logoImage} className = "logo" alt = "Buzz Logo" />
+            {error && <p style = {{ color: "red" }}> {error} </p>}
+            <form className = "form" onSubmit = {handleSubmit}>
+            <input type="text" name="firstName" placeholder="First Name" onChange={handleChange} required />
+                <input type="text" name="lastName" placeholder="Last Name" onChange={handleChange} required />
+                <input type="email" name="email" placeholder="Email" onChange={handleChange} required />
+                <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
+                <button type="submit">Sign Up</button>
                 <div> Already have an account? <Link to = "/login"> Sign In </Link> </div>
+            </form>
         </div> 
     )
 }

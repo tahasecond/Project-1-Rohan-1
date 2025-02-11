@@ -1,12 +1,15 @@
 import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { logoutUser } from "../../api";
+
 import logoImage from '../../assets/images/buzz.svg.png';
-import { Link } from 'react-router-dom';
 import './styles.css';
 
-function NavBar( {setIsAuthenticated} ) {
+function NavBar() {
+  const navigate = useNavigate();
+
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    setIsAuthenticated(false);
+    logoutUser(navigate);
   }
 
   return (
