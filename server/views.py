@@ -123,7 +123,7 @@ def get_movie_details(request, movie_id):
             "image": f"https://image.tmdb.org/t/p/w500{data['poster_path']}"
             if data["poster_path"]
             else None,
-            "backdrops": f"https://image.tmdb.org/t/p/w500{data['backdrop_path']}"
+            "backdrops": f"https://image.tmdb.org/t/p/original{data['backdrop_path']}"
             if data["backdrop_path"]
             else None,
         }

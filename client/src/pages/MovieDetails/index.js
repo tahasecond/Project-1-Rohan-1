@@ -42,7 +42,7 @@ function MovieDetails({ setIsAuthenticated }) {
       <div
         className="movie-container"
         style={{
-          backgroundImage: movie?.image ? `url(${movie.image})` : "",
+          backgroundImage: movie?.backdrops ? `url(${movie.backdrops})` : "",
         }}
       >
         <div className="overlay"></div>
