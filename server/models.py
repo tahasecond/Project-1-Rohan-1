@@ -49,6 +49,14 @@ class Order(models.Model):
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete = models.CASCADE)
 
+class CartItems(models.Model):
+    cart = models.ForeignKey(Cart, on_delete = models.CASCADE)
+    movie = models.ForeignKey(Movie, on_delete = models.CASCADE)
+    quantity = models.PositiveIntegerField(default = 1)
+
+    def total_price(self):
+        return self.quantity * self.movie.price
+
 class Review(models.Model):
     user = models.ForeignKey(User, on_delete = models.CASCADE)
     movie = models.ForeignKey(Movie, on_delete = models.CASCADE)
