@@ -58,6 +58,9 @@ class CartItems(models.Model):
     def total_price(self):
         return self.quantity * self.movie.price
 
+    def __str__(self):
+        return f"{self.quantity} x {self.movie.title} in  {self.cart.user.email}'s cart"
+
 class Review(models.Model):
     user = models.ForeignKey(User, on_delete = models.CASCADE)
     movie = models.ForeignKey(Movie, on_delete = models.CASCADE)
