@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-import React from 'react';
-=======
 import React, { useState, useRef, useEffect } from "react";
-import logoImage from '../../assets/images/buzz.svg.png';
->>>>>>> 8765e6c3e5283f09d78b4a07c3223a3cc508d32e
 import { Link } from 'react-router-dom';
 import { logoutUser } from "../../api";
 
@@ -11,19 +6,15 @@ import logoImage from '../../assets/images/buzz.svg.png';
 import './styles.css';
 import { FaUserCircle, FaShoppingCart } from "react-icons/fa";
 
-<<<<<<< HEAD
 function NavBar() {
-  const handleLogout = () => {
-    logoutUser();
-    window.location.reload();
-  }
-=======
-function NavBar({ setIsAuthenticated }) {
+    const handleLogout = () => {
+        logoutUser();
+        window.location.reload();
+    }
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isCartOpen, setIsCartOpen] = useState(false);
     const dropdownRef = useRef(null);
     const cartDropdownRef = useRef(null);
->>>>>>> 8765e6c3e5283f09d78b4a07c3223a3cc508d32e
 
     // Example cart items (replace with actual cart data)
     const cartItems = [
@@ -40,12 +31,7 @@ function NavBar({ setIsAuthenticated }) {
             image: "https://image.tmdb.org/t/p/w500/example2.jpg"
         }
     ];
-
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        setIsAuthenticated(false);
-    };
-
+    
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
         setIsCartOpen(false);
