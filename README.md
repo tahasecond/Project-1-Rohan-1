@@ -5,7 +5,7 @@
 ## Prerequisites
 
 - Have **Python 3**, **Django**, **Node.js**, and **npm** installed
-- In the `client` directory, run:
+- In the client directory, run:
   ```bash
   npm install
   npm run build
@@ -14,7 +14,6 @@
   ```bash
    pip3 install django-cors-headers
    pip3 install djangorestframework
-   npm install --save @fortawesome/fontawesome-free
   ```
 
 ## Start the App

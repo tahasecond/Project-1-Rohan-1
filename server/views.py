@@ -2,10 +2,8 @@ import logging
 import requests
 from django.shortcuts import render
 from django.http import JsonResponse
-from django.conf import settings
 from rest_framework.response import Response
 from rest_framework import status
-
 from rest_framework.views import APIView
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
@@ -137,7 +135,7 @@ def get_movie_details(request, movie_id):
             "image": f"https://image.tmdb.org/t/p/w500{data['poster_path']}"
             if data["poster_path"]
             else None,
-            "backdrops": f"https://image.tmdb.org/t/p/w500{data['backdrop_path']}"
+            "backdrops": f"https://image.tmdb.org/t/p/original{data['backdrop_path']}"
             if data["backdrop_path"]
             else None,
         }

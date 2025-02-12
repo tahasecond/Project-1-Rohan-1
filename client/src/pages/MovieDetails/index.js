@@ -12,6 +12,11 @@ function MovieDetails({ setIsAuthenticated }) {
 
   console.log("Movie ID from URL:", id);
 
+  useEffect(() => {
+    fetchMovies();
+    window.scrollTo(0, 0);
+  }, [id]); //request movies
+
   const fetchMovies = async () => {
     try {
       console.log("Fetching movie...");
@@ -41,7 +46,7 @@ function MovieDetails({ setIsAuthenticated }) {
       <div
         className="movie-container"
         style={{
-          backgroundImage: movie?.image ? `url(${movie.image})` : "",
+          backgroundImage: movie?.backdrops ? `url(${movie.backdrops})` : "",
         }}
       >
         <div className="overlay"></div>
