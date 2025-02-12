@@ -6,7 +6,6 @@ import SearchPage from "./pages/SearchPage";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 
-import { isAuthenticated } from "./api";
 import { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
@@ -14,14 +13,13 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import { isAuthenticated } from "./api";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    return localStorage.getItem("isLoggedIn") == "true";
-  });
+  const [isLoggedIn, setIsLoggedIn] = useState(isAuthenticated());
   useEffect(() => {
-    localStorage.setItem("isLoggedIn", isLoggedIn);
-  }, [isLoggedIn]);
+    setIsLoggedIn(isAuthenticated());
+  }, []);
 
   return (
     <Router basename="/">

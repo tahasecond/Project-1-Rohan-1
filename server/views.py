@@ -1,79 +1,93 @@
-# this file is for rendering html page
-from django.shortcuts import render
-from django.conf import settings
-from rest_framework.response import Response
-
-# from rest_framework.views import viewsets
+import logging
 import requests
+from django.shortcuts import render
 from django.http import JsonResponse
 from django.conf import settings
-
-# for authentication
+from rest_framework.response import Response
 from rest_framework import status
-from django.contrib.auth.hashers import make_password, check_password
+
 from rest_framework.views import APIView
-from .models import User, Token
-from .serializers import UserSerializer, TokenSerializer
+from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
+from django.contrib.auth.hashers import check_password
 
-
-SALT = "8b4f6b2cc1868d75ef79e5cfb8779c11b6a374bf0fce05b485581bf4e1e25b96c8c2855015de8449"
+logger = logging.getLogger(__name__)
 
 def index(request):
     return render(request, "index.html")
-    
 
 class RegistrationView(APIView):
-    def post(self, request, format = None):
-        email = request.data.get("email")
-        
-        if User.objects.filter(email = email).exists():
-            return Response(
-                {"success": False, "message": "Email already exists"},
-                status = status.HTTP_400_BAD_REQUEST
+    def post(self, request):
+        try:
+            email = request.data.get("email")
+            username = email
+            password = request.data.get("password")
+
+            if User.objects.filter(email=email).exists():
+                logger.warning(f"Registration attempt with existing email: {email}")
+                return JsonResponse(
+                    {"success": False, "message": "Email already exists"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            user = User.objects.create_user(
+                username = username,
+                email = email,
+                password = password
+            )
+            logger.info(f"New user registered: {email}")
+            token, created = Token.objects.get_or_create(user = user)
+            if not created:
+                return JsonResponse(
+                    {"success": False, "message": "Token already exists."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            return JsonResponse(
+                {"success": True, "message": "You are now registered!", "token": token.key},
+                status=status.HTTP_201_CREATED,
             )
 
-        user_data = request.data.copy()
-        user_data["password"] = make_password(password = user_data["password"], salt = SALT)
-        serializer = UserSerializer(data = user_data)
-        
-        if serializer.is_valid():
-            user = serializer.save()
-            token = Token.objects.create(user = user)
+        except Exception as e:
+            logger.exception(f"Unexpected error during registration: {str(e)}")
             return Response(
-                  {"success": True, "message": "You are now registered on our website!", "token" : token.key},
-                status = status.HTTP_200_OK,
+                {"success": False, "message": "An unexpected error occurred. Please try again later."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
-        
-        error_msg = ""
-        for key in serializer.errors:
-            error_msg += serializer.errors[key][0]
-        return Response(
-            {"success": False, "message": error_msg},
-            status = status.HTTP_200_OK,
-        )
 
 class LoginView(APIView):
-    def post(self, request, format = None) :
-        email = request.data.get("email")
-        password = request.data.get("password")
-        
-        try: 
-            user = User.objects.get(email = email)
+    def post(self, request):
+        try:
+            email = request.data.get("email")
+            password = request.data.get("password")
+
+            try:
+                user = User.objects.get(email = email)
+            except User.DoesNotExist:
+                logger.warning(f"Login attempt with non-existent email: {email}")
+                return Response(
+                    {"success": False, "message": "User not found"},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+            
             if check_password(password, user.password):
-                token, created = Token.objects.get_or_create(user = user)
-                return Response (
+                logger.info(f"User logged in: {email}")
+                token = Token.objects.get(user=user) 
+                return Response(
                     {"success": True, "message": "You are now logged in!", "token": token.key},
-                    status = status.HTTP_200_OK
+                    status=status.HTTP_200_OK
                 )
-            else:
-                return Response (
-                    {"success": False, "message": "Invalid Login Credentials!"},
-                    status = status.HTTP_401_UNAUTHORIZED,
-                )
-        except:
-            return Response (
-                {"success": False, "message": "User not found"},
-                status = status.HTTP_404_NOT_FOUND
+
+            logger.warning(f"Invalid login attempt for email: {email}")
+            return Response(
+                {"success": False, "message": "Invalid Login Credentials"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        except Exception as e:
+            logger.exception(f"Unexpected error during login: {str(e)}")
+            return Response(
+                {"success": False, "message": "An unexpected error occurred. Please try again later."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
 # Creates the api json so that we can fetch it from frontend

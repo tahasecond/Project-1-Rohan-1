@@ -1,8 +1,8 @@
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import NavBar from "../../components/NavBar";
 import ReviewSection from "../../components/ReviewSection";
 import "./styles.css";
-import React, { useEffect, useState } from "react";
 
 function MovieDetails({ setIsAuthenticated }) {
   const [movie, setMovie] = useState([null]); // setting up movie request
@@ -11,10 +11,6 @@ function MovieDetails({ setIsAuthenticated }) {
   const { id } = useParams();
 
   console.log("Movie ID from URL:", id);
-
-  useEffect(() => {
-    fetchMovies();
-  }, [id]); //request movies
 
   const fetchMovies = async () => {
     try {
@@ -34,6 +30,10 @@ function MovieDetails({ setIsAuthenticated }) {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchMovies();
+  }, [id]); //request movies
 
   return (
     <div>

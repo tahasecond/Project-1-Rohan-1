@@ -1,15 +1,14 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { logoutUser } from "../../api";
 
 import logoImage from '../../assets/images/buzz.svg.png';
 import './styles.css';
 
 function NavBar() {
-  const navigate = useNavigate();
-
   const handleLogout = () => {
-    logoutUser(navigate);
+    logoutUser();
+    window.location.reload();
   }
 
   return (

@@ -1,37 +1,52 @@
-import { useNavigate } from "react-router-dom"; 
-
-const API_BASE_URL = "http://127.0.0.1:8000";
+const API_BASE_URL = "http://localhost:8000";
 
 export const registerUser = async (userData) => {
-    const response = await fetch(`${API_BASE_URL}/api/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(userData)
-    });
-    return response.json();
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/register/`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(userData)
+        });
+
+        if (!response.ok) {
+            throw new Error("Registraion failed");
+        }
+
+        return response.json();
+    } catch (error) {
+        console.error("Registration error:", error);
+        throw error;
+    }
 };
 
 export const loginUser = async (credentials) => {
-    const response = await fetch(`${API_BASE_URL}/api/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(credentials),
-    });
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/login/`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(credentials),
+        });
+        
+        if (!response.ok) {
+            throw new Error("Login failed");
+        }
 
-    const data = await response.json();
-    if (data.success && data.token) {
-        localStorage.setItem("token", data.token);
+        const data = await response.json();
+        if (data.success && data.token) {
+            localStorage.setItem("token", data.token);
+        }
+        return data; 
+    } catch (error) {
+        console.error("Login error:", error);
+        throw error;
     }
-    return data; 
 };
 
 export const isAuthenticated = () => {
     const token = localStorage.getItem("token");
-
     return token && token !== "null" && token !== "undefined";
 };
 
-export const logoutUser = (navigate) => {
+export const logoutUser = () => {
     localStorage.removeItem("token");
-    navigate("/login");
 };

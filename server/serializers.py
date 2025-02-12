@@ -1,16 +1,12 @@
 from rest_framework import serializers
-from .models import User, Token, Movie, Order, Cart, Review
+from django.contrib.auth.models import User
+from .models import Movie, Order, Cart, Review
 
 class UserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only = True)
     class Meta:
         model = User
-        fields = ['id', 'firstName', 'lastName', 'email', 'password']
-
-class TokenSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Token
-        fields = ['id', 'user_id', 'token', 'created_date', 'expiration_date', 'is_used']
+        fields = ['id', 'username', 'email', 'password']
+        extra_kwargs = {'password': {'write_only': True}}
 
 class MovieSerializer(serializers.ModelSerializer):
     class Meta:
@@ -18,24 +14,16 @@ class MovieSerializer(serializers.ModelSerializer):
         fields = ['movie_id', 'price']
 
 class OrderSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
-    movie = MovieSerializer(read_only=True)
-    
     class Meta:
         model = Order
         fields = ['user', 'movie']
 
 class CartSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
-
     class Meta:
         model = Cart
         fields = ['user']
 
 class ReviewSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
-    movie = MovieSerializer(read_only=True)
-
     class Meta:
         model = Review
         fields = ['user', 'movie', 'comment', 'rating']
