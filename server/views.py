@@ -9,10 +9,14 @@ from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.hashers import check_password
 
+from server.models import Cart
+
 logger = logging.getLogger(__name__)
+
 
 def index(request):
     return render(request, "index.html")
+
 
 class RegistrationView(APIView):
     def post(self, request):
@@ -25,32 +29,38 @@ class RegistrationView(APIView):
                 logger.warning(f"Registration attempt with existing email: {email}")
                 return JsonResponse(
                     {"success": False, "message": "Email already exists"},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
 
             user = User.objects.create_user(
-                username = username,
-                email = email,
-                password = password
+                username=username, email=email, password=password
             )
             logger.info(f"New user registered: {email}")
-            token, created = Token.objects.get_or_create(user = user)
+            token, created = Token.objects.get_or_create(user=user)
             if not created:
                 return JsonResponse(
                     {"success": False, "message": "Token already exists."},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
             return JsonResponse(
-                {"success": True, "message": "You are now registered!", "token": token.key},
+                {
+                    "success": True,
+                    "message": "You are now registered!",
+                    "token": token.key,
+                },
                 status=status.HTTP_201_CREATED,
             )
 
         except Exception as e:
             logger.exception(f"Unexpected error during registration: {str(e)}")
             return Response(
-                {"success": False, "message": "An unexpected error occurred. Please try again later."},
+                {
+                    "success": False,
+                    "message": "An unexpected error occurred. Please try again later.",
+                },
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+
 
 class LoginView(APIView):
     def post(self, request):
@@ -59,20 +69,24 @@ class LoginView(APIView):
             password = request.data.get("password")
 
             try:
-                user = User.objects.get(email = email)
+                user = User.objects.get(email=email)
             except User.DoesNotExist:
                 logger.warning(f"Login attempt with non-existent email: {email}")
                 return Response(
                     {"success": False, "message": "User not found"},
                     status=status.HTTP_404_NOT_FOUND,
                 )
-            
+
             if check_password(password, user.password):
                 logger.info(f"User logged in: {email}")
-                token = Token.objects.get(user=user) 
+                token = Token.objects.get(user=user)
                 return Response(
-                    {"success": True, "message": "You are now logged in!", "token": token.key},
-                    status=status.HTTP_200_OK
+                    {
+                        "success": True,
+                        "message": "You are now logged in!",
+                        "token": token.key,
+                    },
+                    status=status.HTTP_200_OK,
                 )
 
             logger.warning(f"Invalid login attempt for email: {email}")
@@ -84,9 +98,76 @@ class LoginView(APIView):
         except Exception as e:
             logger.exception(f"Unexpected error during login: {str(e)}")
             return Response(
-                {"success": False, "message": "An unexpected error occurred. Please try again later."},
+                {
+                    "success": False,
+                    "message": "An unexpected error occurred. Please try again later.",
+                },
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+
+
+class CartView(APIView):
+    def post(self, request):
+        try:
+            email = request.data.get("email")
+            movie_id = request.data.get("movie_id")
+            movie_title = request.data.get("movie_title")
+            price = request.data.get("price")
+
+            user = User.objects.get(email=email)
+
+            # Create and save cart entry
+            cart_item = Cart.objects.create(
+                user=user, movie_id=movie_id, movie_title=movie_title, price=price
+            )
+            cart_item.save()
+
+            return JsonResponse({"message": "Movie added to cart"}, status=201)
+
+        except User.DoesNotExist:
+            return JsonResponse({"error": "User not found"}, status=404)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+
+    def get(self, request, email):
+        try:
+            user = User.objects.get(email=email)
+            cart_items = Cart.objects.filter(user=user)
+
+            cart_data = [
+                {
+                    "movie_id": item.movie_id,
+                    "movie_title": item.movie_title,
+                    "price": float(item.price),
+                }
+                for item in cart_items
+            ]
+
+            return JsonResponse({"cart": cart_data}, status=200)
+
+        except User.DoesNotExist:
+            return JsonResponse({"error": "User not found"}, status=404)
+
+    def delete(self, request):
+        try:
+            email = request.data.get("email")
+            movie_id = request.data.get("movie_id")
+
+            user = User.objects.get(email=email)
+            deleted_count, _ = Cart.objects.filter(
+                user=user, movie_id=movie_id
+            ).delete()
+
+            if deleted_count == 0:
+                return JsonResponse({"error": "Movie not found in cart"}, status=404)
+
+            return JsonResponse({"message": "Movie removed from cart"}, status=200)
+
+        except User.DoesNotExist:
+            return JsonResponse({"error": "User not found"}, status=404)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+
 
 # Creates the api json so that we can fetch it from frontend
 def get_movies(request):
