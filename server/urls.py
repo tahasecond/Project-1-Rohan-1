@@ -17,14 +17,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path
 from django.views.generic import TemplateView
-from .views import get_movies, get_movie_details, RegistrationView, LoginView
+from .views import get_movies, get_movie_details, RegistrationView, LoginView, CartView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/movies/", get_movies, name="get_movies"),
     path("api/movies/<int:movie_id>/", get_movie_details, name="get_movie_details"),
-    path("api/register/", RegistrationView.as_view(), name = "register"),
-    path("api/login/", LoginView.as_view(), name = "login"),
+    path("api/register/", RegistrationView.as_view(), name="register"),
+    path("api/login/", LoginView.as_view(), name="login"),
+    path("api/cart/", CartView.as_view(), name="cart"),
+    path("api/cart/<str:email>/", CartView.as_view(), name="cart-detail"),
     re_path(
         r"^(?!api/).*", TemplateView.as_view(template_name="index.html")
     ),  # serve index.html for all other routes
