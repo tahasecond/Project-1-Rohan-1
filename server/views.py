@@ -8,7 +8,8 @@ from rest_framework.views import APIView
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.hashers import check_password
-
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
 from server.models import Cart
 
 logger = logging.getLogger(__name__)
@@ -62,6 +63,11 @@ class RegistrationView(APIView):
             )
 
 
+def getEmail(request):
+    email = request.user.email
+    return JsonResponse({"Email": email})
+
+
 class LoginView(APIView):
     def post(self, request):
         try:
@@ -109,14 +115,13 @@ class LoginView(APIView):
 class CartView(APIView):
     def post(self, request):
         try:
-            email = request.data.get("email")
+            email = request.data.get("email")  # Get email from request body
             movie_id = request.data.get("movie_id")
             movie_title = request.data.get("movie_title")
             price = request.data.get("price")
 
             user = User.objects.get(email=email)
 
-            # Create and save cart entry
             cart_item = Cart.objects.create(
                 user=user, movie_id=movie_id, movie_title=movie_title, price=price
             )
@@ -129,8 +134,11 @@ class CartView(APIView):
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=400)
 
-    def get(self, request, email):
+    def get(self, request, email):  # Make email optional
         try:
+            if email is None:
+                return JsonResponse({"error": "Email is required"}, status=400)
+
             user = User.objects.get(email=email)
             cart_items = Cart.objects.filter(user=user)
 
@@ -150,7 +158,7 @@ class CartView(APIView):
 
     def delete(self, request):
         try:
-            email = request.data.get("email")
+            email = request.data.get("email")  # Get email from request body
             movie_id = request.data.get("movie_id")
 
             user = User.objects.get(email=email)

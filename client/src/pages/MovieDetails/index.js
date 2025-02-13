@@ -10,10 +10,10 @@ function MovieDetails({ setIsAuthenticated }) {
   const [error, setError] = useState(null); // Error state
   const { id } = useParams();
 
-  console.log("Movie ID from URL:", id);
-
+  //const [movieTitle,]
   useEffect(() => {
     fetchMovies();
+
     window.scrollTo(0, 0);
   }, [id]); //request movies
 
@@ -36,9 +36,24 @@ function MovieDetails({ setIsAuthenticated }) {
     }
   };
 
-  useEffect(() => {
-    fetchMovies();
-  }, [id]); //request movies
+  const addToCart = async () => {
+    try {
+      console.log("Fetching movie...");
+      const response = await fetch(`http://localhost:8000/api/email/`); // Fetch the movie by ID
+      if (!response.ok) {
+        throw new Error("Failed to fetch movie details");
+      }
+      const data = await response.json();
+
+      // Directly set the movie details since the response is already a single movie object
+      setMovie(data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching movie details:", error);
+      setError(error.message);
+      setLoading(false);
+    }
+  };
 
   return (
     <div>
@@ -59,7 +74,12 @@ function MovieDetails({ setIsAuthenticated }) {
           <h4 id="movie-price">$49.99</h4>
           <div className="button-group">
             <button className="btn">Buy Now!</button>
-            <button className="btn">Add to Cart</button>
+            <button
+              className="btn"
+              onClick={() => addToCart(movie.id, movie.title, 10, email)}
+            >
+              Add to Cart
+            </button>
           </div>
         </div>
       </div>
