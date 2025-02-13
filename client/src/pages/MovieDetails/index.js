@@ -9,6 +9,7 @@ function MovieDetails({ setIsAuthenticated }) {
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(null); // Error state
   const { id } = useParams();
+  const [email, setEmail] = useState('');
 
   //const [movieTitle,]
   useEffect(() => {
@@ -76,7 +77,7 @@ function MovieDetails({ setIsAuthenticated }) {
             <button className="btn">Buy Now!</button>
             <button
               className="btn"
-              onClick={() => addToCart(movie.id, movie.title, 10, email)}
+              onClick={() => addToCart(movie.id, movie.title, 10, {email})}
             >
               Add to Cart
             </button>

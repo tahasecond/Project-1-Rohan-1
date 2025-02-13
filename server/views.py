@@ -62,10 +62,14 @@ class RegistrationView(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
-
-def getEmail(request):
-    email = request.user.email
-    return JsonResponse({"Email": email})
+from rest_framework.authentication import TokenAuthentication
+class ExampleView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get(self, request, format = None):
+        return JsonResponse({
+            "user": request.user.email,
+        })
 
 
 class LoginView(APIView):
