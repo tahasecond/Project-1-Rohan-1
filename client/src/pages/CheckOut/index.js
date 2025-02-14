@@ -82,7 +82,6 @@ const CheckOut = ({ setIsAuthenticated }) => {
           <div className="order-summary">
             <h2>Order Summary</h2>
             <div className="order-summary">
-              <h2>Order Summary</h2>
               {cart.length > 0 ? (
                 cart.map((movie) => (
                   <div key={movie.movie_id} className="movie-details">
