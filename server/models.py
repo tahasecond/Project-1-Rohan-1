@@ -27,3 +27,4 @@ class Review(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     comment = models.TextField()
     rating = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
