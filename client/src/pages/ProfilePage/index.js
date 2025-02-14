@@ -1,5 +1,4 @@
-import "./styles.css";
-import { FaArrowLeft } from "react-icons/fa6";
+import "./profilestyles.css";
 import logoImage from "../../assets/images/buzz.svg.png";
 
 const ProfilePage = () => {
@@ -7,20 +6,23 @@ const ProfilePage = () => {
         <div className="container">
             <div className="navigation">
                 <div className="backBtn">
-                    <Button><FaArrowLeft/><p>Go back</p></Button>
+                    <button>
+                        <p>Go back</p>
+                    </button>
                 </div>
                 <div className="navSelections">
                     <ul>
-                        <li><a href="">Profile</a></li>
-                        <li><a href="">My Reviews</a></li>
-                        <li><a href="">My Movies</a></li>
+                        <li><a href="#">Profile</a></li>
+                        <li><a href="#">My Reviews</a></li>
+                        <li><a href="#">My Movies</a></li>
                     </ul>
                 </div>
                 <div className="statement">
                     <p>Engineered by Yellow Jacket Spirit</p>
-                    <img src={logoImage} alt=""/>
+                    <img src={logoImage} alt="Logo" className="buzzImage"/>
                 </div>
             </div>
+
             <div className="profileContainer">
                 <div className="headerContainer">
                     <h1>My Account</h1>
@@ -30,14 +32,15 @@ const ProfilePage = () => {
                         <div className="idContainer">
                             <div className="leftId">
                                 <div className="pfp">
-                                    <img src="images/lebronjames.png" alt="pfp"/>
+                                    <img src="" alt="Profile"/>
                                 </div>
                                 <h4>Lebron James</h4>
                             </div>
                             <div className="changePfp">
-                                <Button><p>Change Picture</p></Button>
+                                <button><p>Change Picture</p></button>
                             </div>
                         </div>
+
                         <div className="accountContainer">
                             <div className="accountDetailBox">
                                 <div className="userData">
@@ -45,7 +48,7 @@ const ProfilePage = () => {
                                     <p>Lebron James</p>
                                 </div>
                                 <div className="changeInfoBtn">
-                                    <Button>Change Display Name</Button>
+                                    <button>Change Display Name</button>
                                 </div>
                             </div>
                             <div className="accountDetailBox">
@@ -54,7 +57,7 @@ const ProfilePage = () => {
                                     <p>LebronJames@Lakers.com</p>
                                 </div>
                                 <div className="changeInfoBtn">
-                                    <Button>Change Email</Button>
+                                    <button>Change Email</button>
                                 </div>
                             </div>
                             <div className="accountDetailBox">
@@ -63,7 +66,7 @@ const ProfilePage = () => {
                                     <p>TacoTues******</p>
                                 </div>
                                 <div className="changeInfoBtn">
-                                    <Button>Change Password</Button>
+                                    <button>Change Password</button>
                                 </div>
                             </div>
                         </div>
@@ -71,5 +74,7 @@ const ProfilePage = () => {
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
+
+export default ProfilePage
