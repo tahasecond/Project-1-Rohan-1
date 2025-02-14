@@ -13,7 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
 class MovieSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
-        fields = ["movie_id", "price"]
+        fields = ["id", "title", "description", "backdrop", "image", "rating"]
 
 
 class OrderSerializer(serializers.ModelSerializer):

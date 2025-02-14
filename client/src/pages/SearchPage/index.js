@@ -39,7 +39,7 @@ function SearchPage({ setIsAuthenticated }) {
       }
 
       const data = await response.json();
-      setMovies(data.slice(0, 10)); // Only take top 10 movies
+      setMovies(data); // Only take top 10 movies
     } catch (error) {
       console.error("Error fetching movies:", error);
       setError(error.message);

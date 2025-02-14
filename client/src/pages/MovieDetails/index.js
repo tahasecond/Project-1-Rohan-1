@@ -21,14 +21,45 @@ function MovieDetails({ setIsAuthenticated }) {
   const fetchMovies = async () => {
     try {
       console.log("Fetching movie...");
-      const response = await fetch(`http://localhost:8000/api/movies/${id}/`); // Fetch the movie by ID
-      if (!response.ok) {
-        throw new Error("Failed to fetch movie details");
-      }
-      const data = await response.json();
 
-      // Directly set the movie details since the response is already a single movie object
-      setMovie(data);
+      // Try fetching the movie from the local database
+      let response = await fetch(
+        `http://localhost:8000/api/custommovies/${id}/`
+      );
+
+      if (!response.ok) {
+        console.warn("Movie not found locally, fetching from TMDB...");
+
+        // If not found locally, fetch from TMDB
+        response = await fetch(
+          `https://api.themoviedb.org/3/movie/${id}?api_key=b7e53cd3f6fdf95ed3ec34f7bbf27823`
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch movie details from both sources");
+        }
+      }
+
+      const data = await response.json();
+      console.log("BackDrop:" + data.backdrop_path);
+      console.log("BackDrop2:" + data.backdrop);
+      // Ensure correct image formatting if coming from TMDB
+      const movieData = {
+        id: data.id, // ✅ Match Django model field name
+        title: data.title,
+        rating: data.vote_average || data.rating,
+        description: data.description || data.overview,
+        image:
+          data.image ||
+          (data.poster_path
+            ? `https://image.tmdb.org/t/p/w500${data.poster_path}`
+            : ""),
+        backdrop:
+          data.backdrop || // Check if it's available in your local database
+          `https://image.tmdb.org/t/p/w500${data.backdrop_path}`,
+      };
+
+      setMovie(movieData);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching movie details:", error);
@@ -36,6 +67,7 @@ function MovieDetails({ setIsAuthenticated }) {
       setLoading(false);
     }
   };
+
   console.log(token);
   const addToCart = async (movieTitle, movieId, movieImage, price) => {
     try {
@@ -47,12 +79,33 @@ function MovieDetails({ setIsAuthenticated }) {
 
       const { user: userEmail } = await emailResponse.json();
 
-      // Construct request payload
+      // Check if the movie exists in the local database
+      let movieData;
+      const localMovieResponse = await fetch(
+        `http://localhost:8000/api/custommovies/${movieId}/`
+      );
+
+      if (localMovieResponse.ok) {
+        movieData = await localMovieResponse.json();
+      } else {
+        // Fetch from TMDB if not found in local DB
+        console.warn("Movie not found locally, fetching from TMDB...");
+        const tmdbResponse = await fetch(
+          `https://api.themoviedb.org/3/movie/${movieId}?api_key=b7e53cd3f6fdf95ed3ec34f7bbf27823`
+        );
+        if (!tmdbResponse.ok) throw new Error("Movie not found in TMDB either");
+
+        movieData = await tmdbResponse.json();
+      }
+
+      // Construct request payload using available movie data
       const payload = {
         movie_id: movieId,
-        movie_title: movieTitle,
-        image: movieImage, // Ensure image is included
-        price: price,
+        movie_title: movieData.title || movieTitle, // Use TMDB title if available
+        image: movieData.poster_path
+          ? `https://image.tmdb.org/t/p/w500${movieData.poster_path}`
+          : movieImage, // Prefer TMDB image if found
+        price: price || 9.99, // Default price if not provided
       };
 
       console.log(
@@ -90,7 +143,7 @@ function MovieDetails({ setIsAuthenticated }) {
       <div
         className="movie-container"
         style={{
-          backgroundImage: movie?.backdrops ? `url(${movie.backdrops})` : "",
+          backgroundImage: movie?.backdrop ? `url(${movie.backdrop})` : "",
         }}
       >
         <div className="overlay"></div>

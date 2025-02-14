@@ -3,8 +3,12 @@ from django.contrib.auth.models import User  # default django user
 
 
 class Movie(models.Model):
-    movie_id = models.IntegerField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    id = models.IntegerField(default=0, unique=True, primary_key=True)
+    title = models.CharField(max_length=500, default="")
+    description = models.CharField(max_length=10000, default="")
+    backdrop = models.URLField(max_length=500, blank=True, null=True)
+    rating = models.DecimalField(max_digits=10, decimal_places=1, default=0.0)
+    image = models.URLField(max_length=500, blank=True, null=True)
 
 
 class Order(models.Model):
@@ -27,4 +31,4 @@ class Review(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     comment = models.TextField()
     rating = models.IntegerField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    # created_at = models.DateTimeField(auto_now_add=True, default=0)

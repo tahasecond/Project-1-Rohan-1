@@ -24,12 +24,16 @@ from .views import (
     RegistrationView,
     LoginView,
     CartView,
+    movie_list,
+    movie_detail,
 )
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/movies/", get_movies, name="get_movies"),
     path("api/email/<str:token>/", EmailView.as_view(), name="get_email"),
+    path("api/custommovies/", movie_list, name="movie-list"),
+    path("api/custommovies/<int:id>/", movie_detail, name="movie-detail"),
     path("api/movies/<int:movie_id>/", get_movie_details, name="get_movie_details"),
     path("api/register/", RegistrationView.as_view(), name="register"),
     path("api/login/", LoginView.as_view(), name="login"),

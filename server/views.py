@@ -11,7 +11,9 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth.hashers import check_password
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
-from server.models import Cart
+from server.models import Cart, Movie
+from rest_framework.decorators import api_view
+from server.serializers import MovieSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -260,3 +262,59 @@ def get_movie_details(request, movie_id):
         }
         return JsonResponse(movie)
     return JsonResponse({"error": "Failed to fetch movie details"}, status=500)
+
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Movie
+from .serializers import MovieSerializer
+
+
+@api_view(["GET", "DELETE"])
+def movie_detail(request, id):  # ✅ Change movie_id to id
+    try:
+        movie = Movie.objects.get(id=id)  # ✅ Match model field name
+
+        if request.method == "GET":
+            serializer = MovieSerializer(movie)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        elif request.method == "DELETE":
+            movie.delete()
+            return Response(
+                {"message": "Movie removed from database"}, status=status.HTTP_200_OK
+            )
+
+    except Movie.DoesNotExist:
+        return Response({"error": "Movie not found"}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET", "POST"])
+def movie_list(request):
+    try:
+        if request.method == "GET":
+            movies = Movie.objects.all()
+            serializer = MovieSerializer(movies, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        elif request.method == "POST":
+            # Handling the movie data coming from TMDB
+            movie_data = request.data
+            # Ensure the rating is a decimal (if it’s not)
+            if "rating" in movie_data:
+                movie_data["rating"] = round(float(movie_data["rating"]), 1)
+            # Handle the backdrop URL, ensuring it’s correctly formatted
+            if "backdrop" in movie_data and movie_data["backdrop"]:
+                movie_data["backdrop"] = movie_data["backdrop"].strip()
+            # Create the movie using the serializer
+            serializer = MovieSerializer(data=movie_data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
