@@ -5,6 +5,7 @@ import MovieDetails from "./pages/MovieDetails";
 import SearchPage from "./pages/SearchPage";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
+import MyMoviesPage from "./pages/MyMoviesPage";
 
 import { useState, useEffect } from "react";
 import {
@@ -40,6 +41,7 @@ function PrivateRoutes() {
     <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/moviedetails/:id" element={<MovieDetails />} />
+        <Route path="/mymoviespage" element={<MyMoviesPage />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/checkout" element={<CheckOut />} />
         <Route path="*" element={<Navigate to="/" />} />
