@@ -1,3 +1,4 @@
+import json
 import logging
 import requests
 from django.shortcuts import render
@@ -62,14 +63,19 @@ class RegistrationView(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
+
 from rest_framework.authentication import TokenAuthentication
-class ExampleView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-    def get(self, request, format = None):
-        return JsonResponse({
-            "user": request.user.email,
-        })
+
+
+class EmailView(APIView):
+    def get(self, request, token, format=None):
+        try:
+            # Authenticate user using token
+            user_token = Token.objects.get(key=token)
+            user = user_token.user
+            return JsonResponse({"user": user.email})
+        except Token.DoesNotExist:
+            return JsonResponse({"error": "Invalid token"}, status=401)
 
 
 class LoginView(APIView):
@@ -117,30 +123,51 @@ class LoginView(APIView):
 
 
 class CartView(APIView):
-    def post(self, request):
+    def post(self, request, email):
         try:
-            email = request.data.get("email")  # Get email from request body
-            movie_id = request.data.get("movie_id")
-            movie_title = request.data.get("movie_title")
-            price = request.data.get("price")
+            data = json.loads(request.body)  # Load JSON data
+            print("Incoming data:", data)  # ✅ Debug log
+
+            movie_id = data.get("movie_id")
+            movie_title = data.get("movie_title")
+            image = data.get("image")
+            price = data.get("price")
 
             user = User.objects.get(email=email)
 
+            # Check if the movie is already in the cart
+            existing_item = Cart.objects.filter(user=user, movie_id=movie_id).first()
+
+            if existing_item:
+                existing_item.quantity += 1
+                existing_item.save()
+                return JsonResponse({"message": "Movie quantity updated"}, status=200)
+
+            # Create a new cart item
             cart_item = Cart.objects.create(
-                user=user, movie_id=movie_id, movie_title=movie_title, price=price
+                user=user,
+                movie_id=movie_id,
+                movie_title=movie_title,
+                price=price,
+                image=image,
             )
             cart_item.save()
+
+            print(
+                "Saved Cart Item:", cart_item.image
+            )  # ✅ Check if image is saved correctly
 
             return JsonResponse({"message": "Movie added to cart"}, status=201)
 
         except User.DoesNotExist:
             return JsonResponse({"error": "User not found"}, status=404)
         except Exception as e:
+            print("Error:", str(e))  # ✅ Log errors
             return JsonResponse({"error": str(e)}, status=400)
 
-    def get(self, request, email):  # Make email optional
+    def get(self, request, email):
         try:
-            if email is None:
+            if not email:
                 return JsonResponse({"error": "Email is required"}, status=400)
 
             user = User.objects.get(email=email)
@@ -150,35 +177,18 @@ class CartView(APIView):
                 {
                     "movie_id": item.movie_id,
                     "movie_title": item.movie_title,
-                    "price": float(item.price),
+                    "price": float(item.price),  # Ensure price is properly formatted
+                    "image": item.image,
                 }
                 for item in cart_items
             ]
 
-            return JsonResponse({"cart": cart_data}, status=200)
+            print("Cart Data:", cart_data)  # ✅ Debugging log
+
+            return JsonResponse({"cart": cart_data}, status=200, safe=False)
 
         except User.DoesNotExist:
             return JsonResponse({"error": "User not found"}, status=404)
-
-    def delete(self, request):
-        try:
-            email = request.data.get("email")  # Get email from request body
-            movie_id = request.data.get("movie_id")
-
-            user = User.objects.get(email=email)
-            deleted_count, _ = Cart.objects.filter(
-                user=user, movie_id=movie_id
-            ).delete()
-
-            if deleted_count == 0:
-                return JsonResponse({"error": "Movie not found in cart"}, status=404)
-
-            return JsonResponse({"message": "Movie removed from cart"}, status=200)
-
-        except User.DoesNotExist:
-            return JsonResponse({"error": "User not found"}, status=404)
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=400)
 
 
 # Creates the api json so that we can fetch it from frontend

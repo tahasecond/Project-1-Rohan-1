@@ -14,23 +14,12 @@ class Order(models.Model):
 
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    movie = models.ForeignKey(
-        Movie,
-        on_delete=models.CASCADE,
-        related_name="cart_movies",
-        null=True,
-        blank=True,
-    )  # Optional ForeignKey for movie
-    movie_title = models.CharField(
-        max_length=255, blank=True, null=True
-    )  # Optional field for movie_title, no need to reference Movie here
-    price = 10
-
-    def save(self, *args, **kwargs):
-        # Populate movie_title from movie if movie is provided and movie_title is empty
-        if self.movie and not self.movie_title:
-            self.movie_title = self.movie.title
-        super().save(*args, **kwargs)
+    movie_id = models.IntegerField(default=0)  # ✅ Add a default value
+    movie_title = models.CharField(max_length=255, default=0)
+    price = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0.0
+    )  # Ensure default for price too
+    image = models.URLField(max_length=500, blank=True, null=True)
 
 
 class Review(models.Model):
