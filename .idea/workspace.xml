@@ -5,13 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="74383c3c-f2bb-4531-9003-417299be7479" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/client/src/pages/ProfilePage/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/pages/ProfilePage/profilestyles.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/pages/LogIn/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/LogIn/styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/pages/MyMoviesPage/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/MyMoviesPage/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/pages/MyMoviesPage/mymoviestyles.css" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/MyMoviesPage/mymoviestyles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/pages/SignUp/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/SignUp/styles.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,7 +83,7 @@
       <option name="presentableId" value="Default" />
       <updated>1739479946951</updated>
       <workItem from="1739479949505" duration="3264000" />
-      <workItem from="1739499672374" duration="7906000" />
+      <workItem from="1739499672374" duration="8891000" />
     </task>
     <servers />
   </component>
