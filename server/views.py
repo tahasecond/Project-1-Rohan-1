@@ -190,6 +190,22 @@ class CartView(APIView):
         except User.DoesNotExist:
             return JsonResponse({"error": "User not found"}, status=404)
 
+    def delete(self, request, email, movie_id):
+        try:
+            user = User.objects.get(email=email)
+            cart_item = Cart.objects.filter(user=user, movie_id=movie_id).first()
+
+            if not cart_item:
+                return JsonResponse({"error": "Movie not found in cart"}, status=404)
+
+            cart_item.delete()
+            return JsonResponse({"message": "Movie removed from cart"}, status=200)
+
+        except User.DoesNotExist:
+            return JsonResponse({"error": "User not found"}, status=404)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+
 
 # Creates the api json so that we can fetch it from frontend
 def get_movies(request):

@@ -3,7 +3,6 @@ import NavBar from "../../components/NavBar";
 import "./styles.css";
 
 const CheckOut = ({ setIsAuthenticated }) => {
-  // State to manage form input values
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -13,13 +12,13 @@ const CheckOut = ({ setIsAuthenticated }) => {
     state: "",
     zipCode: "",
   });
-
-  const [cart, setCart] = useState([]); // Initialize as an empty array
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
+  const [cart, setCart] = useState([]);
   const token = localStorage.getItem("token");
 
-  // Fetch cart data
+  useEffect(() => {
+    fetchCart();
+  }, []);
+
   const fetchCart = async () => {
     try {
       const emailResponse = await fetch(
@@ -37,28 +36,40 @@ const CheckOut = ({ setIsAuthenticated }) => {
       if (!cartResponse.ok) {
         throw new Error("Failed to fetch cart");
       }
-
       const data = await cartResponse.json();
-      console.log("Raw API response:", data); // Debugging API response
 
-      if (data.cart && Array.isArray(data.cart)) {
-        setCart(data.cart); // Correctly setting cart items
-      } else {
-        console.error("Unexpected cart format:", data);
-        setCart([]); // Fallback to an empty cart
-      }
+      setCart(data.cart);
     } catch (error) {
       console.error("Error fetching cart:", error);
-      setCart([]); // Ensure UI doesn't crash
     }
   };
 
-  // Call fetchCart when the component mounts
-  useEffect(() => {
-    fetchCart();
-  }, []); // Empty dependency array ensures it runs once
+  const deleteFromCart = async (movieId) => {
+    try {
+      const emailResponse = await fetch(
+        `http://localhost:8000/api/email/${token}/`
+      );
+      if (!emailResponse.ok) {
+        throw new Error("Failed to fetch user email");
+      }
+      const emailData = await emailResponse.json();
+      const userEmail = emailData.user;
 
-  // Handle form input changes
+      const response = await fetch(
+        `http://localhost:8000/api/cart/${userEmail}/${movieId}/`,
+        { method: "DELETE" }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to remove movie from cart");
+      }
+
+      setCart(cart.filter((movie) => movie.movie_id !== movieId));
+    } catch (error) {
+      console.error("Error removing movie from cart:", error);
+    }
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -67,11 +78,9 @@ const CheckOut = ({ setIsAuthenticated }) => {
     }));
   };
 
-  // Process form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Order submitted:", formData);
-    // Add your order submission logic here
   };
 
   return (
@@ -94,6 +103,12 @@ const CheckOut = ({ setIsAuthenticated }) => {
                       <h3>{movie.movie_title}</h3>
                       <p>${movie.price.toFixed(2)}</p>
                     </div>
+                    <button
+                      className="delete-button"
+                      onClick={() => deleteFromCart(movie.movie_id)}
+                    >
+                      ❌
+                    </button>
                   </div>
                 ))
               ) : (
@@ -103,19 +118,10 @@ const CheckOut = ({ setIsAuthenticated }) => {
                 <h3>
                   Total: $
                   {cart
-                    .reduce((total, movie) => total + movie.price, 0)
+                    .reduce((total, movie) => total + (movie.price || 0), 0)
                     .toFixed(2)}
                 </h3>
               </div>
-            </div>
-
-            <div className="total-section">
-              <h3>
-                Total: $
-                {cart
-                  .reduce((total, movie) => total + (movie.price || 0), 0)
-                  .toFixed(2)}
-              </h3>
             </div>
           </div>
 

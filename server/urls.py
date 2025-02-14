@@ -35,6 +35,7 @@ urlpatterns = [
     path("api/login/", LoginView.as_view(), name="login"),
     path("api/cart/", CartView.as_view(), name="cart"),
     path("api/cart/<str:email>/", CartView.as_view(), name="cart-detail"),
+    path("api/cart/<str:email>/<int:movie_id>/", CartView.as_view()),
     re_path(
         r"^(?!api/).*", TemplateView.as_view(template_name="index.html")
     ),  # serve index.html for all other routes
