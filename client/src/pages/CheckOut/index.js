@@ -70,6 +70,90 @@ const CheckOut = ({ setIsAuthenticated }) => {
     }
   };
 
+  const checkOut = async () => {
+    try {
+      // Step 1: Fetch the user's wallet
+      const walletResponse = await fetch(
+        `http://localhost:8000/api/wallet/${token}/`
+      );
+      if (!walletResponse.ok) {
+        throw new Error("Failed to fetch wallet");
+      }
+      const walletData = await walletResponse.json();
+      const currentWalletBalance = walletData.wallet;
+
+      // Step 2: Calculate the total price of the cart
+      const totalAmount = cart.reduce(
+        (total, movie) => total + (movie.price || 0),
+        0
+      );
+
+      // Step 3: Check if the user has sufficient funds
+      if (currentWalletBalance < totalAmount) {
+        alert("Insufficient funds in your wallet.");
+        return;
+      }
+
+      // Step 4: Delete all items from the user's cart
+      const emailResponse = await fetch(
+        `http://localhost:8000/api/email/${token}/`
+      );
+      if (!emailResponse.ok) {
+        throw new Error("Failed to fetch user email");
+      }
+      const emailData = await emailResponse.json();
+      const userEmail = emailData.user;
+
+      // Delete items from the cart
+      for (let movie of cart) {
+        const deleteResponse = await fetch(
+          `http://localhost:8000/api/cart/${userEmail}/${movie.movie_id}/`,
+          { method: "DELETE" }
+        );
+        if (!deleteResponse.ok) {
+          throw new Error("Failed to remove movie from cart");
+        }
+      }
+
+      // Step 5: Update the user's wallet balance
+      const updatedWalletBalance = currentWalletBalance - totalAmount;
+      const updateWalletResponse = await fetch(
+        `http://localhost:8000/api/wallet/${token}/`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ wallet: updatedWalletBalance }),
+        }
+      );
+      if (!updateWalletResponse.ok) {
+        throw new Error("Failed to update wallet");
+      }
+
+      // Step 6: Create orders for the movies in the cart
+      for (let movie of cart) {
+        const orderResponse = await fetch(`http://localhost:8000/api/order/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            user: userEmail, // You may want to send the user ID here instead
+            movie: movie.movie_id,
+          }),
+        });
+        if (!orderResponse.ok) {
+          throw new Error("Failed to create order");
+        }
+      }
+
+      // Clear the cart after successful checkout
+      setCart([]);
+
+      alert("Purchase completed successfully!");
+    } catch (error) {
+      console.error("Error during checkout:", error);
+      alert("An error occurred during checkout. Please try again.");
+    }
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -187,7 +271,11 @@ const CheckOut = ({ setIsAuthenticated }) => {
                 required
               />
             </div>
-            <button type="submit" className="checkout-button">
+            <button
+              type="submit"
+              className="checkout-button"
+              onClick={checkOut}
+            >
               Complete Purchase
             </button>
           </form>

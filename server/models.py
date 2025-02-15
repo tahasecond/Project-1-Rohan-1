@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
 from django.dispatch import receiver  # default django user
@@ -16,6 +17,9 @@ class Movie(models.Model):
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(
+        default=timezone.now
+    )  # Automatically set to current time when order is created
 
 
 class Cart(models.Model):

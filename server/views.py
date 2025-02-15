@@ -1,7 +1,7 @@
 import json
 import logging
 import requests
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework import status
@@ -15,6 +15,7 @@ from server.models import Cart, Movie
 from rest_framework.decorators import api_view, permission_classes
 from server.serializers import MovieSerializer
 from rest_framework.exceptions import AuthenticationFailed
+from django.utils.timezone import now
 
 logger = logging.getLogger(__name__)
 
@@ -268,8 +269,8 @@ def get_movie_details(request, movie_id):
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Movie, UserProfile
-from .serializers import MovieSerializer
+from .models import Movie, Order, UserProfile
+from .serializers import MovieSerializer, OrderSerializer
 
 
 @api_view(["GET", "DELETE"])
@@ -321,21 +322,76 @@ def movie_list(request):
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(["GET"])
-def get_wallet(request, token):
+@api_view(["GET", "PATCH"])
+def wallet_view(request, token):
     try:
-        # First, authenticate the token
+        user = Token.objects.get(key=token).user
+        user_profile = get_object_or_404(UserProfile, user=user)
+
+        if request.method == "GET":
+            return Response({"wallet": user_profile.wallet}, status=status.HTTP_200_OK)
+
+        elif request.method == "PATCH":
+            new_wallet_amount = request.data.get("wallet")
+            if new_wallet_amount is not None:
+                user_profile.wallet = new_wallet_amount
+                user_profile.save()
+                return Response(
+                    {"message": "Wallet updated", "wallet": user_profile.wallet},
+                    status=status.HTTP_200_OK,
+                )
+            else:
+                return Response(
+                    {"error": "Invalid request data"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+    except Token.DoesNotExist:
+        return Response({"error": "Invalid token"}, status=status.HTTP_404_NOT_FOUND)
+
+
+class CreateOrderView(APIView):
+    def post(self, request):
         try:
-            user_token = Token.objects.get(key=token)
-            user = user_token.user
-        except Token.DoesNotExist:
-            raise AuthenticationFailed("Invalid token")
+            user_email = request.data.get("user")
+            movie_id = request.data.get("movie")
 
-        # Now, fetch the UserProfile
-        user_profile = UserProfile.objects.get(user=user)
+            # Get the user
+            user = get_object_or_404(User, email=user_email)
+            movie = get_object_or_404(Movie, id=movie_id)
 
-        # Return the wallet balance
-        return JsonResponse({"wallet_balance": user_profile.wallet})
+            # Create the order
+            order = Order.objects.create(user=user, movie=movie, timestamp=now())
+            order.save()
 
-    except UserProfile.DoesNotExist:
-        return JsonResponse({"error": "User profile not found"}, status=404)
+            return JsonResponse(
+                {"success": True, "message": "Order created successfully"},
+                status=status.HTTP_201_CREATED,
+            )
+
+        except Exception as e:
+            return JsonResponse(
+                {"success": False, "message": str(e)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+
+class GetUserOrdersView(APIView):
+    def get(self, request, user_email):
+        try:
+            user = get_object_or_404(User, email=user_email)
+            orders = Order.objects.filter(user=user).order_by(
+                "-timestamp"
+            )  # Latest orders first
+            serializer = OrderSerializer(orders, many=True)
+
+            return JsonResponse(
+                {"success": True, "orders": serializer.data},
+                status=status.HTTP_200_OK,
+            )
+
+        except Exception as e:
+            return JsonResponse(
+                {"success": False, "message": str(e)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
