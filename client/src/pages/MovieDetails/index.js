@@ -49,6 +49,7 @@ function MovieDetails({ setIsAuthenticated }) {
         title: data.title,
         rating: data.vote_average || data.rating,
         description: data.description || data.overview,
+        price: 10,
         image:
           data.image ||
           (data.poster_path
@@ -153,7 +154,7 @@ function MovieDetails({ setIsAuthenticated }) {
             {movie?.description || "No description available"}
           </p>
           <p id="rating">{movie?.rating || "no rating available"}</p>
-          <h4 id="movie-price">$49.99</h4>
+          <h3 id="movie-price">${movie?.price}</h3>
           <div className="button-group">
             <button className="btn">Buy Now!</button>
             <button

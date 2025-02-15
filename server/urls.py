@@ -26,7 +26,9 @@ from .views import (
     CartView,
     movie_list,
     movie_detail,
-    get_wallet,
+    wallet_view,
+    CreateOrderView,
+    GetUserOrdersView,
 )
 
 urlpatterns = [
@@ -34,8 +36,12 @@ urlpatterns = [
     path("api/movies/", get_movies, name="get_movies"),
     path("api/email/<str:token>/", EmailView.as_view(), name="get_email"),
     path("api/custommovies/", movie_list, name="movie-list"),
+    path("api/order/", CreateOrderView.as_view(), name="create_order"),
+    path(
+        "api/orders/<str:user_email>/", GetUserOrdersView.as_view(), name="get_orders"
+    ),
     path("api/custommovies/<int:id>/", movie_detail, name="movie-detail"),
-    path("api/wallet/<str:token>/", get_wallet, name="get_wallet"),
+    path("api/wallet/<str:token>/", wallet_view, name="get_wallet"),
     path("api/movies/<int:movie_id>/", get_movie_details, name="get_movie_details"),
     path("api/register/", RegistrationView.as_view(), name="register"),
     path("api/login/", LoginView.as_view(), name="login"),
@@ -46,6 +52,3 @@ urlpatterns = [
         r"^(?!api/).*", TemplateView.as_view(template_name="index.html")
     ),  # serve index.html for all other routes
 ]
-# In your urls.py
-from django.urls import path
-from .views import get_wallet
