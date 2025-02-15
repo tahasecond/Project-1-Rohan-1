@@ -9,10 +9,18 @@ export const registerUser = async (userData) => {
     });
 
     if (!response.ok) {
-      throw new Error("Registraion failed");
+      throw new Error("Registration failed");
     }
 
-    return response.json();
+    const data = await response.json();
+
+    if (data.success) {
+      localStorage.setItem("token", data.token);
+
+      return data;
+    }
+
+    throw new Error(data.message || "Unknown error occurred");
   } catch (error) {
     console.error("Registration error:", error);
     throw error;

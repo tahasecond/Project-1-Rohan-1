@@ -12,8 +12,9 @@ from django.contrib.auth.hashers import check_password
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from server.models import Cart, Movie
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from server.serializers import MovieSerializer
+from rest_framework.exceptions import AuthenticationFailed
 
 logger = logging.getLogger(__name__)
 
@@ -267,7 +268,7 @@ def get_movie_details(request, movie_id):
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Movie
+from .models import Movie, UserProfile
 from .serializers import MovieSerializer
 
 
@@ -318,3 +319,23 @@ def movie_list(request):
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET"])
+def get_wallet(request, token):
+    try:
+        # First, authenticate the token
+        try:
+            user_token = Token.objects.get(key=token)
+            user = user_token.user
+        except Token.DoesNotExist:
+            raise AuthenticationFailed("Invalid token")
+
+        # Now, fetch the UserProfile
+        user_profile = UserProfile.objects.get(user=user)
+
+        # Return the wallet balance
+        return JsonResponse({"wallet_balance": user_profile.wallet})
+
+    except UserProfile.DoesNotExist:
+        return JsonResponse({"error": "User profile not found"}, status=404)

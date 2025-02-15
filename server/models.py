@@ -1,5 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import User  # default django user
+from django.contrib.auth.models import User
+from django.dispatch import receiver  # default django user
+from django.db.models.signals import post_save
 
 
 class Movie(models.Model):
@@ -32,3 +34,30 @@ class Review(models.Model):
     comment = models.TextField()
     rating = models.IntegerField()
     # created_at = models.DateTimeField(auto_now_add=True, default=0)
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    wallet = models.DecimalField(
+        max_digits=10, decimal_places=2, default=10.00
+    )  # Stores user balance
+
+    def __str__(self):
+        return f"{self.user.username} - Wallet: ${self.wallet}"
+
+
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        logger.info(f"Creating user profile for {instance.username}")
+        UserProfile.objects.get_or_create(user=instance, defaults={"wallet": 10.00})
+
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.userprofile.save()
