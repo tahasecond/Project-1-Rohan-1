@@ -1,8 +1,18 @@
 import "./profilestyles.css";
 import logoImage from "../../assets/images/buzz.svg.png";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import PasswordResetPopup from "../../components/PasswordResetPopup";
 
 const ProfilePage = () => {
+    const [isPasswordResetOpen, setIsPasswordResetOpen] = useState(false);
+
+    const handlePasswordResetSubmit = ({ currentPassword, newPassword, confirmPassword }) => {
+        // Placeholder for password reset logic
+        console.log('Password reset submitted:', { currentPassword, newPassword, confirmPassword });
+        alert('Password reset request submitted!');
+    };
+
     return (
         <div className="container">
             <div className="navigation">
@@ -67,13 +77,19 @@ const ProfilePage = () => {
                                     <p>TacoTues******</p>
                                 </div>
                                 <div className="changeInfoBtn">
-                                    <button>Change Password</button>
+                                    <button onClick={() => setIsPasswordResetOpen(true)}>Change Password</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <PasswordResetPopup
+                isOpen={isPasswordResetOpen}
+                onClose={() => setIsPasswordResetOpen(false)}
+                onSubmit={handlePasswordResetSubmit}
+            />
         </div>
     );
 };

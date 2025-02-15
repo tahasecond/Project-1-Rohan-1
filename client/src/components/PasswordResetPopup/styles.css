@@ -1,4 +1,4 @@
-.review-popup-overlay {
+.password-reset-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -11,12 +11,12 @@
     z-index: 1000;
 }
 
-.review-popup {
+.password-reset-popup {
     background-color: white;
     padding: 2rem;
     border-radius: 8px;
     width: 90%;
-    max-width: 500px;
+    max-width: 400px;
     position: relative;
 }
 
@@ -39,39 +39,12 @@
     outline: none;
 }
 
-.star-rating {
-    margin: 1rem 0;
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-}
-
-.star {
-    font-size: 2rem;
-    cursor: pointer;
-    color: #ddd;
-    transition: color 0.2s;
-}
-
-.star.active {
-    color: #ffd700;
-}
-
-textarea {
+input {
     width: 100%;
-    height: 150px;
     padding: 0.5rem;
     margin: 1rem 0;
     border: 1px solid #ddd;
     border-radius: 4px;
-    resize: none;
-}
-
-.char-count {
-    text-align: right;
-    color: #666;
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
 }
 
 .submit-button {
