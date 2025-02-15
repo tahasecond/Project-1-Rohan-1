@@ -4,6 +4,7 @@ import NavBar from "../../components/NavBar";
 import ReviewSection from "../../components/ReviewSection";
 import "./styles.css";
 import { CartUser } from "../../api";
+import ReviewPopup from "../../components/ReviewPopup";
 
 function MovieDetails({ setIsAuthenticated }) {
   const [movie, setMovie] = useState([null]); // setting up movie request
@@ -12,6 +13,7 @@ function MovieDetails({ setIsAuthenticated }) {
   const { id } = useParams();
   const [email, setEmail] = useState("");
   const token = localStorage.getItem("token");
+  const [isReviewPopupOpen, setIsReviewPopupOpen] = useState(false);
   //const [movieTitle,]
   useEffect(() => {
     fetchMovies();
@@ -56,7 +58,7 @@ function MovieDetails({ setIsAuthenticated }) {
             : ""),
         backdrop:
           data.backdrop || // Check if it's available in your local database
-          `https://image.tmdb.org/t/p/w500${data.backdrop_path}`,
+          `https://image.tmdb.org/t/p/original${data.backdrop_path}`,
       };
 
       setMovie(movieData);
@@ -136,6 +138,17 @@ function MovieDetails({ setIsAuthenticated }) {
       console.error("Error:", error);
     }
   };
+//insert backend logic for review submission lines 141-149
+  const handleReviewSubmit = async ({ rating, comment, movieId }) => {
+    try {
+      // Placeholder for review submission
+      console.log('Review submitted:', { rating, comment, movieId });
+      alert('Review submitted successfully!');
+    } catch (error) {
+      console.error('Error submitting review:', error);
+      alert('Failed to submit review. Please try again.');
+    }
+  };
 
   return (
     <div>
@@ -155,7 +168,12 @@ function MovieDetails({ setIsAuthenticated }) {
           <p id="rating">{movie?.rating || "no rating available"}</p>
           <h4 id="movie-price">$49.99</h4>
           <div className="button-group">
-            <button className="btn">Buy Now!</button>
+            <button
+              className="btn"
+              onClick={() => setIsReviewPopupOpen(true)}
+            >
+              Write Review
+            </button>
             <button
               className="btn"
               onClick={() => addToCart(movie.title, movie.id, movie.image, 10)}
@@ -166,6 +184,12 @@ function MovieDetails({ setIsAuthenticated }) {
         </div>
       </div>
       <ReviewSection />
+      <ReviewPopup
+        isOpen={isReviewPopupOpen}
+        onClose={() => setIsReviewPopupOpen(false)}
+        onSubmit={handleReviewSubmit}
+        movieId={id}
+      />
     </div>
   );
 }

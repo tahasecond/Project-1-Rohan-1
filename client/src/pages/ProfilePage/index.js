@@ -1,5 +1,6 @@
 import "./profilestyles.css";
 import logoImage from "../../assets/images/buzz.svg.png";
+import { Link } from "react-router-dom";
 
 const ProfilePage = () => {
     return (
@@ -12,9 +13,9 @@ const ProfilePage = () => {
                 </div>
                 <div className="navSelections">
                     <ul>
-                        <li><a href="#">Profile</a></li>
-                        <li><a href="#">My Reviews</a></li>
-                        <li><a href="#">My Movies</a></li>
+                        <li><Link to="/profile">Profile</Link></li>
+                        <li><Link to="/myreviews">My Reviews</Link></li>
+                        <li><Link to="/mymoviespage">My Movies</Link></li>
                     </ul>
                 </div>
                 <div className="statement">

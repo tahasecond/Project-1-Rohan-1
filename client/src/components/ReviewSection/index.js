@@ -5,8 +5,6 @@ const ReviewSection = () => {
     return (
         <section id="review">
             <div className="review-heading">
-                <span>Write a Review</span>
-                <textarea name="input-review" id="" cols="30" rows="10"></textarea>
                 <h1>See what customers say!</h1>
             </div>
             <div className="review-box-container">

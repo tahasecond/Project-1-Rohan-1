@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import MyMoviesPage from "./pages/MyMoviesPage";
 import ProfilePage from "./pages/ProfilePage";
+import MyReviews from "./pages/MyReviews";
 
 import { useState, useEffect } from "react";
 import {
@@ -46,6 +47,7 @@ function PrivateRoutes() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/checkout" element={<CheckOut />} />
+        <Route path="/myreviews" element={<MyReviews />} />
         <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );

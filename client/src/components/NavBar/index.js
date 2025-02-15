@@ -18,18 +18,8 @@ function NavBar() {
 
     // Example cart items (replace with actual cart data)
     const cartItems = [
-        { 
-            id: 1, 
-            title: "Movie 1", 
-            price: 14.99,
-            image: "https://image.tmdb.org/t/p/w500/example1.jpg"
-        },
-        { 
-            id: 2, 
-            title: "Movie 2", 
-            price: 12.99,
-            image: "https://image.tmdb.org/t/p/w500/example2.jpg"
-        }
+        { id: 1, price: 14.99 },
+        { id: 2, price: 12.99 }
     ];
     
     const toggleDropdown = () => {
@@ -63,34 +53,19 @@ function NavBar() {
                 <img src={logoImage} alt="Home Logo" className="home-logo"/>
                 <span className="home-text">GT Movies</span>
             </Link>
-
-            <ul className="navbar-links">
-                <li><Link to="/">Home</Link></li>
-                <li><Link to="/mymoviespage">Movies</Link></li>
-                <li><Link to="/reviews">My Reviews</Link></li>
-            </ul>
             
             <div className="nav-icons">
                 <div className="cart-dropdown" ref={cartDropdownRef}>
-                    <FaShoppingCart className="cart-icon" onClick={toggleCart}/>
+                    <div className="cart-icon-wrapper">
+                        <FaShoppingCart className="cart-icon" onClick={toggleCart}/>
+                        <span className="cart-count">{cartItems.length}</span>
+                    </div>
                     {isCartOpen && (
                         <div className="cart-menu">
-                            <h3>Shopping Cart</h3>
-                            {cartItems.map(item => (
-                                <div key={item.id} className="cart-item">
-                                    <img 
-                                        src={item.image} 
-                                        alt={item.title} 
-                                        className="cart-item-image"
-                                    />
-                                    <div className="cart-item-details">
-                                        <span className="cart-item-title">{item.title}</span>
-                                        <span className="cart-item-price">${item.price}</span>
-                                    </div>
-                                </div>
-                            ))}
-                            <div className="cart-total">
-                                <strong>Total: ${cartItems.reduce((sum, item) => sum + item.price, 0).toFixed(2)}</strong>
+                            <h3>Cart Summary</h3>
+                            <div className="cart-summary">
+                                <p>Items: {cartItems.length}</p>
+                                <p>Total: ${cartItems.reduce((sum, item) => sum + item.price, 0).toFixed(2)}</p>
                             </div>
                             <Link to="/checkout" className="checkout-link">
                                 Checkout Now

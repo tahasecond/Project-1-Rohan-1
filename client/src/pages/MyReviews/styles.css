@@ -1,0 +1,98 @@
+.my-reviews-page {
+    min-height: 100vh;
+    background-color: white;
+    padding-top: 60px;
+}
+
+.reviews-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.reviews-content h1 {
+    color: #333;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 1rem;
+}
+
+.review-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.review-card:hover {
+    transform: translateY(-5px);
+}
+
+.movie-info {
+    padding: 1rem;
+    background-color: #f8f8f8;
+    text-align: center;
+}
+
+.movie-info h3 {
+    color: #333;
+    margin: 0.5rem 0;
+    font-size: 1.2rem;
+}
+
+.movie-poster {
+    width: 120px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.loading {
+    text-align: center;
+    color: #666;
+    font-size: 1.2rem;
+    padding: 2rem;
+}
+
+.no-reviews {
+    text-align: center;
+    color: #666;
+    padding: 3rem;
+    background-color: #f8f8f8;
+    border-radius: 12px;
+    margin: 2rem auto;
+    max-width: 600px;
+}
+
+.no-reviews p {
+    margin: 0.5rem 0;
+    font-size: 1.1rem;
+}
+
+.no-reviews p:first-child {
+    font-size: 1.3rem;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .reviews-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .reviews-content {
+        padding: 1rem;
+    }
+
+    .reviews-content h1 {
+        font-size: 2rem;
+    }
+}
