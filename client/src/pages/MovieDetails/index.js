@@ -1,3 +1,5 @@
+import { fetchMovieReviews } from "../../api";
+
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import NavBar from "../../components/NavBar";
@@ -17,6 +19,7 @@ function MovieDetails({ setIsAuthenticated }) {
   //const [movieTitle,]
   useEffect(() => {
     fetchMovies();
+    fetchMovieReviews();
     window.scrollTo(0, 0);
   }, [id]); //request movies
 
@@ -139,21 +142,23 @@ function MovieDetails({ setIsAuthenticated }) {
       console.error("Error:", error);
     }
   };
-//insert backend logic for review submission lines 141-149
-  const handleReviewSubmit = async ({ rating, comment, movieId }) => {
+
+  const [reviews, setReviews] = useState([]);
+  const [reviewsLoading, setReviewsLoading] = useState(true);
+  const fetchMovieReviews = async () => {
     try {
-      // Placeholder for review submission
-      console.log('Review submitted:', { rating, comment, movieId });
-      alert('Review submitted successfully!');
+      const response = await fetchMovieReviews(id);
+      setReviews(response.reviews);
     } catch (error) {
-      console.error('Error submitting review:', error);
-      alert('Failed to submit review. Please try again.');
+      console.log("Error fetchting movie reviews: ", error);
+    } finally {
+      setReviewsLoading(false);
     }
   };
 
   return (
     <div>
-      <NavBar setIsAuthenticated={setIsAuthenticated} />
+      <NavBar />
       <div
         className="movie-container"
         style={{
@@ -188,7 +193,6 @@ function MovieDetails({ setIsAuthenticated }) {
       <ReviewPopup
         isOpen={isReviewPopupOpen}
         onClose={() => setIsReviewPopupOpen(false)}
-        onSubmit={handleReviewSubmit}
         movieId={id}
       />
     </div>

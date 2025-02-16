@@ -80,3 +80,62 @@ export const CartUser = async (token) => {
     throw error;
   }
 };
+
+export const fetchUserReviews = async (token) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/fetch_user_reviews`, {
+      method: "GET",
+      headers: {"Content-Type": "application/json",
+      Authorization: `Token ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error ("Failed fetching reviews");
+    }
+
+    return await response.json();    
+  }
+  catch (error) {
+    console.log("Fetching reviews error: ", error);
+    throw error;
+  }
+};
+
+export const fetchMovieReviews = async (movieID) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/fetch_movie_reviews/${movieID}`, {
+      method: "GET",
+      headers: {"Content-Type": "application/json"}
+    });
+
+    if (!response.ok) {
+      throw new Error ("Failed fetching reviews");
+    }
+
+    return await response.json();
+  }
+  catch (error) {
+    console.log("Fetching reviews error: ", error);
+    throw error;
+  }
+};
+
+export const leaveReview = async (userData) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/leave_review`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(userData)
+    });
+
+    if (!response.ok) {
+      throw new Error ("Failed leaving review");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.log("Leaving review error: ", error);
+    throw error;
+  }
+};
