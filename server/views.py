@@ -420,3 +420,78 @@ class GetUserOrdersView(APIView):
                 {"success": False, "message": str(e)},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+from server.models import Review
+
+class LeaveReview(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        try: 
+            user = request.user
+
+            rating = request.data.get("rating")
+            comment = request.data.get("comment")
+            movie = request.data.get("movieId")
+            
+            review = Review.objects.create(
+                user = user,
+                movie = movie,
+                rating = rating,
+                comment = comment
+            )
+            review.save()
+            return Response({"success": True, "message": "Review left successfully"}, status = 201)
+        except Exception as e:
+            return Response({"success": False, "message": "Failed to leave a review"}, status = 400)
+
+class FetchMovieReviews(APIView):
+    def get(self, request, id):
+        try:
+            reviews = Review.objects.filter(movie = id)
+
+            reviews_data = []
+            for review in reviews:
+                reviews_data.append({
+                    "id": review.id,
+                    "user": review.user.username,
+                    "comment": review.comment,
+                    "rating": review.rating
+                })
+
+            return Response({
+                "success": True,
+                "message": "Movie reviews fetched",
+                "reviews": reviews_data
+            })
+        except Exception as e:
+            return Response({
+                "success": False,
+                "message": "Failed to fetch movie reviews"
+            })
+
+class FetchUserReviews(APIView):
+    def get(self, request, token):
+        try:
+            user = Token.objects.get(key = token).user
+            reviews = Review.objects.filter(user = user)
+
+            reviews_data = []
+            for review in reviews:
+                reviews_data.append({
+                    "review_id": review.id,
+                    "movieId": review.movie,
+                    "comment": review.comment,
+                    "rating": review.rating
+                })
+            
+            return Response({
+                "success": True,
+                "message": "User reviews fetched",
+                "reviews": reviews_data
+            })
+        except Exception as e:
+            return Response({
+                "success": False,
+                "message": "Failed to fetch user reviews"
+            })

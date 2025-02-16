@@ -30,6 +30,13 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     transition: transform 0.3s ease;
+
+    align-items: center; /* Centers items horizontally */
+}
+
+.review-card > * {
+    width: auto; /* Prevent full width stretching */
+    max-width: 400px; /* Adjust as needed */
 }
 
 .review-card:hover {
@@ -40,6 +47,10 @@
     padding: 1rem;
     background-color: #f8f8f8;
     text-align: center;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
 }
 
 .movie-info h3 {

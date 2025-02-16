@@ -45,7 +45,7 @@ export const loginUser = async (credentials) => {
     }
     return data;
   } catch (error) {
-    console.error("Login error:", error);
+    console.error(error);
     throw error;
   }
 };
@@ -76,17 +76,18 @@ export const CartUser = async (token) => {
     const data = await response.json();
     return data; // Returns { user: email }
   } catch (error) {
-    console.error("Error fetching user email:", error);
+    console.error(error);
     throw error;
   }
 };
 
-export const fetchUserReviews = async (token) => {
+export const fetchUserReviews = async () => {
+  const token = localStorage.getItem("token");
   try {
-    const response = await fetch(`${API_BASE_URL}/api/fetch_user_reviews`, {
+    const response = await fetch(`${API_BASE_URL}/api/fetch_user_reviews/${token}/`, {
       method: "GET",
-      headers: {"Content-Type": "application/json",
-      Authorization: `Token ${token}`
+      headers: {
+        "Content-Type": "application/json"
       }
     });
 
@@ -97,16 +98,18 @@ export const fetchUserReviews = async (token) => {
     return await response.json();    
   }
   catch (error) {
-    console.log("Fetching reviews error: ", error);
+    console.log(error);
     throw error;
   }
 };
 
-export const fetchMovieReviews = async (movieID) => {
+export const fetchMovieReviews = async (movieId) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/fetch_movie_reviews/${movieID}`, {
+    const response = await fetch(`${API_BASE_URL}/api/fetch_movie_reviews/${movieId}/`, {
       method: "GET",
-      headers: {"Content-Type": "application/json"}
+      headers: {
+        "Content-Type": "application/json"
+      },
     });
 
     if (!response.ok) {
@@ -116,16 +119,20 @@ export const fetchMovieReviews = async (movieID) => {
     return await response.json();
   }
   catch (error) {
-    console.log("Fetching reviews error: ", error);
+    console.log(error);
     throw error;
   }
 };
 
 export const leaveReview = async (userData) => {
+  const token = localStorage.getItem("token");
   try {
-    const response = await fetch(`${API_BASE_URL}/api/leave_review`, {
+    const response = await fetch(`${API_BASE_URL}/api/leave_review/`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Token ${token}`
+       },
       body: JSON.stringify(userData)
     });
 
@@ -135,7 +142,22 @@ export const leaveReview = async (userData) => {
 
     return await response.json();
   } catch (error) {
-    console.log("Leaving review error: ", error);
+    console.log(error);
     throw error;
   }
 };
+
+export const fetchMovieDetails = async (movieId) => {
+  try {
+    const response = await fetch(
+      `http://api.themoviedb.org/3/movie/${movieId}?api_key=b7e53cd3f6fdf95ed3ec34f7bbf27823&language=en-US`
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch movie details");
+    }
+    return await response.json();
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}

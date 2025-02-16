@@ -1,5 +1,3 @@
-import { fetchMovieReviews } from "../../api";
-
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import NavBar from "../../components/NavBar";
@@ -19,14 +17,11 @@ function MovieDetails({ setIsAuthenticated }) {
   //const [movieTitle,]
   useEffect(() => {
     fetchMovies();
-    fetchMovieReviews();
     window.scrollTo(0, 0);
   }, [id]); //request movies
 
   const fetchMovies = async () => {
     try {
-      console.log("Fetching movie...");
-
       // Try fetching the movie from the local database
       let response = await fetch(
         `http://localhost:8000/api/custommovies/${id}/`
@@ -46,8 +41,6 @@ function MovieDetails({ setIsAuthenticated }) {
       }
 
       const data = await response.json();
-      console.log("BackDrop:" + data.backdrop_path);
-      console.log("BackDrop2:" + data.backdrop);
       // Ensure correct image formatting if coming from TMDB
       const movieData = {
         id: data.id, // ✅ Match Django model field name
@@ -73,88 +66,67 @@ function MovieDetails({ setIsAuthenticated }) {
       setLoading(false);
     }
   };
+  
+  // const addToCart = async (movieTitle, movieId, movieImage, price) => {
+  //   try {
+  //     // Fetch user email from backend
+  //     const emailResponse = await fetch(
+  //       `http://localhost:8000/api/email/${token}/`
+  //     );
+  //     if (!emailResponse.ok) throw new Error("Failed fetching user email");
 
-  console.log(token);
-  const addToCart = async (movieTitle, movieId, movieImage, price) => {
-    try {
-      // Fetch user email from backend
-      const emailResponse = await fetch(
-        `http://localhost:8000/api/email/${token}/`
-      );
-      if (!emailResponse.ok) throw new Error("Failed fetching user email");
+  //     const { user: userEmail } = await emailResponse.json();
 
-      const { user: userEmail } = await emailResponse.json();
+  //     // Check if the movie exists in the local database
+  //     let movieData;
+  //     const localMovieResponse = await fetch(
+  //       `http://localhost:8000/api/custommovies/${movieId}/`
+  //     );
 
-      // Check if the movie exists in the local database
-      let movieData;
-      const localMovieResponse = await fetch(
-        `http://localhost:8000/api/custommovies/${movieId}/`
-      );
+  //     if (localMovieResponse.ok) {
+  //       movieData = await localMovieResponse.json();
+  //     } else {
+  //       // Fetch from TMDB if not found in local DB
+  //       console.warn("Movie not found locally, fetching from TMDB...");
+  //       const tmdbResponse = await fetch(
+  //         `https://api.themoviedb.org/3/movie/${movieId}?api_key=b7e53cd3f6fdf95ed3ec34f7bbf27823`
+  //       );
+  //       if (!tmdbResponse.ok) throw new Error("Movie not found in TMDB either");
 
-      if (localMovieResponse.ok) {
-        movieData = await localMovieResponse.json();
-      } else {
-        // Fetch from TMDB if not found in local DB
-        console.warn("Movie not found locally, fetching from TMDB...");
-        const tmdbResponse = await fetch(
-          `https://api.themoviedb.org/3/movie/${movieId}?api_key=b7e53cd3f6fdf95ed3ec34f7bbf27823`
-        );
-        if (!tmdbResponse.ok) throw new Error("Movie not found in TMDB either");
+  //       movieData = await tmdbResponse.json();
+  //     }
 
-        movieData = await tmdbResponse.json();
-      }
+  //     // Construct request payload using available movie data
+  //     const payload = {
+  //       movie_id: movieId,
+  //       movie_title: movieData.title || movieTitle, // Use TMDB title if available
+  //       image: movieData.poster_path
+  //         ? `https://image.tmdb.org/t/p/w500${movieData.poster_path}`
+  //         : movieImage, // Prefer TMDB image if found
+  //       price: price || 9.99, // Default price if not provided
+  //     };
 
-      // Construct request payload using available movie data
-      const payload = {
-        movie_id: movieId,
-        movie_title: movieData.title || movieTitle, // Use TMDB title if available
-        image: movieData.poster_path
-          ? `https://image.tmdb.org/t/p/w500${movieData.poster_path}`
-          : movieImage, // Prefer TMDB image if found
-        price: price || 9.99, // Default price if not provided
-      };
+  //     // Send movie data to the cart API
+  //     const cartResponse = await fetch(
+  //       `http://localhost:8000/api/cart/${userEmail}/`,
+  //       {
+  //         method: "POST",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify(payload),
+  //       }
+  //     );
 
-      console.log(
-        "Sending request to:",
-        `http://localhost:8000/api/cart/${userEmail}/`
-      );
-      console.log("Payload:", JSON.stringify(payload));
+  //     if (!cartResponse.ok) {
+  //       const errorText = await cartResponse.text();
+  //       console.error("Server response:", errorText);
+  //       throw new Error("Failed adding movie to cart");
+  //     }
 
-      // Send movie data to the cart API
-      const cartResponse = await fetch(
-        `http://localhost:8000/api/cart/${userEmail}/`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        }
-      );
-
-      if (!cartResponse.ok) {
-        const errorText = await cartResponse.text();
-        console.error("Server response:", errorText);
-        throw new Error("Failed adding movie to cart");
-      }
-
-      const cartData = await cartResponse.json();
-      console.log("Movie added to cart:", cartData);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
-  const [reviews, setReviews] = useState([]);
-  const [reviewsLoading, setReviewsLoading] = useState(true);
-  const fetchMovieReviews = async () => {
-    try {
-      const response = await fetchMovieReviews(id);
-      setReviews(response.reviews);
-    } catch (error) {
-      console.log("Error fetchting movie reviews: ", error);
-    } finally {
-      setReviewsLoading(false);
-    }
-  };
+  //     const cartData = await cartResponse.json();
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //   }
+  // };
 
   return (
     <div>
@@ -182,14 +154,14 @@ function MovieDetails({ setIsAuthenticated }) {
             </button>
             <button
               className="btn"
-              onClick={() => addToCart(movie.title, movie.id, movie.image, 10)}
+              // onClick={() => addToCart(movie.title, movie.id, movie.image, 10)}
             >
               Add to Cart
             </button>
           </div>
         </div>
       </div>
-      <ReviewSection />
+      <ReviewSection movieId = {id}/>
       <ReviewPopup
         isOpen={isReviewPopupOpen}
         onClose={() => setIsReviewPopupOpen(false)}

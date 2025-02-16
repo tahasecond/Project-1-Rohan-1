@@ -3,23 +3,42 @@ import NavBar from "../../components/NavBar";
 import ReviewBox from "../../components/ReviewBox";
 import "./styles.css";
 
-import { fetchUserReviews } from "../../api";
+import { fetchUserReviews, fetchMovieDetails } from "../../api";
 
 function MyReviews () {
     const [reviews, setReviews] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetchUserReviews();
+        fetchReviews();
     }, []);
 
-    const fetchUserReviews = async () => {
+    const fetchReviews = async () => {
         try {
-            const token = localStorage.getItem("token");
-            const response = await fetchUserReviews(token);
-            setReviews(response.reviews);
+            const response = await fetchUserReviews();
+            if (!response.success){
+                throw new Error ("Failed to fetch user reviews");
+            }
+            
+            const movieReviews = await Promise.all(
+                response.reviews.map(async (review) => {
+                    const movieData = await fetchMovieDetails(review.movieId);
+
+                    return {
+                        ...review,
+                        movie: {
+                            title: movieData?.title || "Unknown Movie",
+                            poster: movieData?.poster_path
+                                ? `https://image.tmdb.org/t/p/w500${movieData.poster_path}`
+                                : "/placeholder.jpg",
+                        }
+                    };
+                })
+            );
+            
+            setReviews(movieReviews);
         } catch (error) {
-            console.error("Error fetching reviews:", error);
+            console.error(error);
         } finally {
             setLoading(false);
         }
@@ -35,19 +54,20 @@ function MyReviews () {
                 ) : reviews.length > 0 ? (
                     <div className="reviews-grid">
                         {reviews.map((review) => (
-                            <div key={review.id} className="review-card">
+                            <div key={review.review_id} className="review-card">
                                 <div className="movie-info">
                                     <img 
-                                        src={review.movie.image} 
-                                        alt={review.movie.title}
-                                        className="movie-poster"
+                                        src = {review.movie.poster}
+                                        alt = {review.movie.title}
+                                        className = "movie-poster"
                                     />
                                     <h3>{review.movie.title}</h3>
                                 </div>
                                 <ReviewBox
-                                    name={review.user.username}
-                                    subheading={`Rated ${review.rating}/5`}
+                                    key = {review.review_id}
+                                    name = "You"
                                     description={review.comment}
+                                    rating = {review.rating}
                                 />
                             </div>
                         ))}

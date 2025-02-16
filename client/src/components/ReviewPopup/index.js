@@ -14,14 +14,11 @@ const ReviewPopup = ({ isOpen, onClose, onSubmit, movieId }) => {
             return;
         }
         
-        const token = localStorage.getItem("token");
-        const formData = {token, rating, comment, movieId};
+        const formData = {rating, comment, movieId};
         try {
             const response = await leaveReview(formData);
             if (response.success) {
                 alert("Review submitted successfully! ");
-                console.log('Review submitted:', { rating, comment, movieId });
-
                 setRating(0);
                 setComment('');
                 onClose();

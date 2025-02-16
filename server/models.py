@@ -36,11 +36,9 @@ class Cart(models.Model):
 
 class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    movie = models.IntegerField()
     comment = models.TextField()
     rating = models.IntegerField()
-    # created_at = models.DateTimeField(auto_now_add=True, default=0)
-
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
