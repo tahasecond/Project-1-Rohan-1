@@ -1,25 +1,35 @@
 import React, { useState } from 'react';
 import './styles.css';
+import { leaveReview } from '../../api';
 
 const ReviewPopup = ({ isOpen, onClose, onSubmit, movieId }) => {
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
     const [hoveredStar, setHoveredStar] = useState(0);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (rating === 0) {
             alert('Please select a rating');
             return;
         }
         
-        // TODO: Insert backend logic for review submission here
-        // Example: await submitReview({ rating, comment, movieId });
+        const token = localStorage.getItem("token");
+        const formData = {token, rating, comment, movieId};
+        try {
+            const response = await leaveReview(formData);
+            if (response.success) {
+                alert("Review submitted successfully! ");
+                console.log('Review submitted:', { rating, comment, movieId });
 
-        onSubmit({ rating, comment, movieId });
-        setRating(0);
-        setComment('');
-        onClose();
+                setRating(0);
+                setComment('');
+                onClose();
+            }
+        } catch (error) {
+            console.error('Error submitting review:', error);
+            alert('Failed to submit review. Please try again.');
+        }
     };
 
     if (!isOpen) return null;
