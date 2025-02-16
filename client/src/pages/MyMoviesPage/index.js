@@ -23,8 +23,6 @@ const MyMoviesPage = () => {
         const data = await response.json();
 
         if (data.success) {
-          console.log("Movies Data: ", movies);
-
           setMovies(data.orders); // Set movies from the order data
         } else {
           console.error("Error fetching movies:", data.message);
@@ -37,6 +35,19 @@ const MyMoviesPage = () => {
     fetchMovies();
   }, []);
 
+  const downloadImage = (imageUrl) => {
+    const link = document.createElement("a");
+    link.href = imageUrl; // Image URL
+    link.download = imageUrl.split("/").pop(); // Suggests file name from the URL
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const goHome = () => {
+    window.location.href = "http://localhost:8000/"; // Navigate to homepage
+  };
+
   return (
     <div
       className="container"
@@ -44,6 +55,9 @@ const MyMoviesPage = () => {
     >
       <div className="pageHeader">
         <h1>My Movies</h1>
+        <button onClick={goHome} className="homeButton">
+          Back to Homepage
+        </button>
       </div>
       <div className="moviesGrid">
         {movies.map((order, index) => (
@@ -66,7 +80,9 @@ const MyMoviesPage = () => {
                 : "Untitled Movie"}
             </div>
             <div className="btnContainer">
-              <button>Download</button>
+              <button onClick={() => downloadImage(order.image)}>
+                Download
+              </button>
             </div>
           </div>
         ))}
