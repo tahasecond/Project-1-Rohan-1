@@ -66,67 +66,67 @@ function MovieDetails({ setIsAuthenticated }) {
       setLoading(false);
     }
   };
-  
-  // const addToCart = async (movieTitle, movieId, movieImage, price) => {
-  //   try {
-  //     // Fetch user email from backend
-  //     const emailResponse = await fetch(
-  //       `http://localhost:8000/api/email/${token}/`
-  //     );
-  //     if (!emailResponse.ok) throw new Error("Failed fetching user email");
 
-  //     const { user: userEmail } = await emailResponse.json();
+  const addToCart = async (movieTitle, movieId, movieImage, price) => {
+    try {
+      // Fetch user email from backend
+      const emailResponse = await fetch(
+        `http://localhost:8000/api/email/${token}/`
+      );
+      if (!emailResponse.ok) throw new Error("Failed fetching user email");
 
-  //     // Check if the movie exists in the local database
-  //     let movieData;
-  //     const localMovieResponse = await fetch(
-  //       `http://localhost:8000/api/custommovies/${movieId}/`
-  //     );
+      const { user: userEmail } = await emailResponse.json();
 
-  //     if (localMovieResponse.ok) {
-  //       movieData = await localMovieResponse.json();
-  //     } else {
-  //       // Fetch from TMDB if not found in local DB
-  //       console.warn("Movie not found locally, fetching from TMDB...");
-  //       const tmdbResponse = await fetch(
-  //         `https://api.themoviedb.org/3/movie/${movieId}?api_key=b7e53cd3f6fdf95ed3ec34f7bbf27823`
-  //       );
-  //       if (!tmdbResponse.ok) throw new Error("Movie not found in TMDB either");
+      // Check if the movie exists in the local database
+      let movieData;
+      const localMovieResponse = await fetch(
+        `http://localhost:8000/api/custommovies/${movieId}/`
+      );
 
-  //       movieData = await tmdbResponse.json();
-  //     }
+      if (localMovieResponse.ok) {
+        movieData = await localMovieResponse.json();
+      } else {
+        // Fetch from TMDB if not found in local DB
+        console.warn("Movie not found locally, fetching from TMDB...");
+        const tmdbResponse = await fetch(
+          `https://api.themoviedb.org/3/movie/${movieId}?api_key=b7e53cd3f6fdf95ed3ec34f7bbf27823`
+        );
+        if (!tmdbResponse.ok) throw new Error("Movie not found in TMDB either");
 
-  //     // Construct request payload using available movie data
-  //     const payload = {
-  //       movie_id: movieId,
-  //       movie_title: movieData.title || movieTitle, // Use TMDB title if available
-  //       image: movieData.poster_path
-  //         ? `https://image.tmdb.org/t/p/w500${movieData.poster_path}`
-  //         : movieImage, // Prefer TMDB image if found
-  //       price: price || 9.99, // Default price if not provided
-  //     };
+        movieData = await tmdbResponse.json();
+      }
 
-  //     // Send movie data to the cart API
-  //     const cartResponse = await fetch(
-  //       `http://localhost:8000/api/cart/${userEmail}/`,
-  //       {
-  //         method: "POST",
-  //         headers: { "Content-Type": "application/json" },
-  //         body: JSON.stringify(payload),
-  //       }
-  //     );
+      // Construct request payload using available movie data
+      const payload = {
+        movie_id: movieId,
+        movie_title: movieData.title || movieTitle, // Use TMDB title if available
+        image: movieData.poster_path
+          ? `https://image.tmdb.org/t/p/w500${movieData.poster_path}`
+          : movieImage, // Prefer TMDB image if found
+        price: price || 9.99, // Default price if not provided
+      };
 
-  //     if (!cartResponse.ok) {
-  //       const errorText = await cartResponse.text();
-  //       console.error("Server response:", errorText);
-  //       throw new Error("Failed adding movie to cart");
-  //     }
+      // Send movie data to the cart API
+      const cartResponse = await fetch(
+        `http://localhost:8000/api/cart/${userEmail}/`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
 
-  //     const cartData = await cartResponse.json();
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //   }
-  // };
+      if (!cartResponse.ok) {
+        const errorText = await cartResponse.text();
+        console.error("Server response:", errorText);
+        throw new Error("Failed adding movie to cart");
+      }
+
+      const cartData = await cartResponse.json();
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
   return (
     <div>
@@ -146,22 +146,19 @@ function MovieDetails({ setIsAuthenticated }) {
           <p id="rating">{movie?.rating || "no rating available"}</p>
           <h3 id="movie-price">${movie?.price}</h3>
           <div className="button-group">
-            <button
-              className="btn"
-              onClick={() => setIsReviewPopupOpen(true)}
-            >
+            <button className="btn" onClick={() => setIsReviewPopupOpen(true)}>
               Write Review
             </button>
             <button
               className="btn"
-              // onClick={() => addToCart(movie.title, movie.id, movie.image, 10)}
+              onClick={() => addToCart(movie.title, movie.id, movie.image, 10)}
             >
               Add to Cart
             </button>
           </div>
         </div>
       </div>
-      <ReviewSection movieId = {id}/>
+      <ReviewSection movieId={id} />
       <ReviewPopup
         isOpen={isReviewPopupOpen}
         onClose={() => setIsReviewPopupOpen(false)}
