@@ -1,4 +1,5 @@
 const API_BASE_URL = "http://localhost:8000";
+const token = localStorage.getItem("token");
 
 export const registerUser = async (userData) => {
   try {
@@ -51,7 +52,6 @@ export const loginUser = async (credentials) => {
 };
 
 export const isAuthenticated = () => {
-  const token = localStorage.getItem("token");
   return token && token !== "null" && token !== "undefined";
 };
 
@@ -82,7 +82,6 @@ export const CartUser = async (token) => {
 };
 
 export const fetchUserReviews = async () => {
-  const token = localStorage.getItem("token");
   try {
     const response = await fetch(`${API_BASE_URL}/api/fetch_user_reviews/${token}/`, {
       method: "GET",
@@ -125,7 +124,6 @@ export const fetchMovieReviews = async (movieId) => {
 };
 
 export const leaveReview = async (userData) => {
-  const token = localStorage.getItem("token");
   try {
     const response = await fetch(`${API_BASE_URL}/api/leave_review/`, {
       method: "POST",
@@ -143,6 +141,27 @@ export const leaveReview = async (userData) => {
     return await response.json();
   } catch (error) {
     console.log(error);
+    throw error;
+  }
+};
+
+export const resetPassword = async (passwords) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/reset_password/`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Token ${token}`
+      },
+      body: JSON.stringify(passwords)
+    });
+
+    if(!response.ok) {
+      throw new Error ("Failed to reset password");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error(error);
     throw error;
   }
 };

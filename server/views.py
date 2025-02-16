@@ -495,3 +495,40 @@ class FetchUserReviews(APIView):
                 "success": False,
                 "message": "Failed to fetch user reviews"
             })
+        
+class ResetPasswordView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def put (self, request):
+        try:
+            user = request.user
+            currentPassword = request.data.get("currentPassword")
+            if not check_password(currentPassword, user.password):
+                return Response(
+                    {
+                        "success": False, 
+                        "error": "Old password is incorrect"
+                    }, 
+                    status = status.HTTP_400_BAD_REQUEST
+                )
+
+            newPassword = request.data.get("newPassword")
+            user.set_password(newPassword)
+            user.save()
+
+            return Response(
+            {
+                "success": True,
+                "message": "Reset password successfully"
+            },
+                status = status.HTTP_200_OK
+            )
+        except Exception as e:
+            logger.error(f"Error in ResetPasswordView: {str(e)}")
+            return Response(
+                {
+                    "success": False,
+                    "message": "Failed to reset password"
+                },
+                    status = status.HTTP_500_INTERNAL_SERVER_ERROR
+            )

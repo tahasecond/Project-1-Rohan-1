@@ -6,14 +6,17 @@ const PasswordResetPopup = ({ isOpen, onClose, onSubmit }) => {
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // TODO: Add backend logic for password reset
-        onSubmit({ currentPassword, newPassword, confirmPassword });
+        
+        if (newPassword != confirmPassword) {
+            alert("New password does not match!");
+        }
+        await onSubmit({ currentPassword, newPassword });
+        
         setCurrentPassword('');
         setNewPassword('');
         setConfirmPassword('');
-        onClose();
     };
 
     if (!isOpen) return null;

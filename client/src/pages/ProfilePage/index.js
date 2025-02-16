@@ -3,14 +3,25 @@ import logoImage from "../../assets/images/buzz.svg.png";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import PasswordResetPopup from "../../components/PasswordResetPopup";
+import { resetPassword } from "../../api";
 
 const ProfilePage = () => {
     const [isPasswordResetOpen, setIsPasswordResetOpen] = useState(false);
 
-    const handlePasswordResetSubmit = ({ currentPassword, newPassword, confirmPassword }) => {
-        // Placeholder for password reset logic
-        console.log('Password reset submitted:', { currentPassword, newPassword, confirmPassword });
-        alert('Password reset request submitted!');
+    const handlePasswordResetSubmit = async ({ currentPassword, newPassword }) => {
+        try {
+            const response = await resetPassword( {currentPassword, newPassword} );
+
+            if (response.success) {
+                alert(response.message || 'Password reset successfully!');
+                setIsPasswordResetOpen(false);
+            } else {
+                alert(response.message || "Failed to reset password");
+            }
+
+        } catch (error) {
+            alert(error.message || "Failed to reset password");
+        }
     };
 
     return (
