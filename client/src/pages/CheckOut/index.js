@@ -130,17 +130,27 @@ const CheckOut = ({ setIsAuthenticated }) => {
       }
 
       // Step 6: Create orders for the movies in the cart
+
       for (let movie of cart) {
+        console.log("TITLE: " + movie.title);
+        console.log("ID: " + movie.movie_id);
+        console.log("image: " + movie.image);
+        console.log("TITLE2: " + movie.movie_title);
         const orderResponse = await fetch(`http://localhost:8000/api/order/`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            user: userEmail, // You may want to send the user ID here instead
-            movie: movie.movie_id,
+            user: userEmail, // Ensure this is correct
+            movie: movie.movie_id, // Send the movie ID
+            movie_title: movie.movie_title, // Send the movie title
+            image: movie.image, // Send the movie image URL (if available)
           }),
         });
+
         if (!orderResponse.ok) {
-          throw new Error("Failed to create order");
+          const errorData = await orderResponse.text(); // Log response text
+          console.error("Order creation failed:", errorData);
+          throw new Error(`Failed to create order: ${errorData}`);
         }
       }
 

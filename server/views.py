@@ -350,18 +350,43 @@ def wallet_view(request, token):
         return Response({"error": "Invalid token"}, status=status.HTTP_404_NOT_FOUND)
 
 
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+from rest_framework.views import APIView
+from rest_framework import status
+from .models import User, Movie, Order
+from django.utils.timezone import now
+
+
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+from rest_framework.views import APIView
+from rest_framework import status
+from .models import User, Order
+from django.utils.timezone import now
+
+
 class CreateOrderView(APIView):
     def post(self, request):
         try:
             user_email = request.data.get("user")
             movie_id = request.data.get("movie")
+            movie_title = request.data.get(
+                "movie_title"
+            )  # Movie title from the frontend
+            image = request.data.get("image")  # Movie image URL from the frontend
 
             # Get the user
             user = get_object_or_404(User, email=user_email)
-            movie = get_object_or_404(Movie, id=movie_id)
 
-            # Create the order
-            order = Order.objects.create(user=user, movie=movie, timestamp=now())
+            # Create the order with the movie data
+            order = Order.objects.create(
+                user=user,
+                movie_id=movie_id,  # Save the movie ID
+                movie_title=movie_title,  # Save the movie title
+                image=image,  # Save the movie image URL
+                timestamp=now(),  # Automatically set to current time
+            )
             order.save()
 
             return JsonResponse(

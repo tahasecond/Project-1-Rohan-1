@@ -19,7 +19,7 @@ class MovieSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ["user", "movie"]
+        fields = ["user", "movie_id", "movie_title", "image", "timestamp"]
 
 
 class CartSerializer(serializers.ModelSerializer):

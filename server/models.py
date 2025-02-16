@@ -16,7 +16,9 @@ class Movie(models.Model):
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    movie_id = models.IntegerField(default=0)  # ✅ Add a default value
+    movie_title = models.CharField(max_length=255, default=0)
+    image = models.URLField(max_length=500, blank=True, null=True)
     timestamp = models.DateTimeField(
         default=timezone.now
     )  # Automatically set to current time when order is created
