@@ -29,18 +29,41 @@ function App() {
   }, []);
 
   return (
-    <Router basename="/">
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/login" element={isLoggedIn ? <Navigate to = "/" /> : <Login setIsLoggedIn = {setIsLoggedIn} />} />
-        <Route path="/signup" element={isLoggedIn ? <Navigate to = "/" /> : <SignUp />} />
-        <Route path="/forgotpassword" element={isLoggedIn ? <Navigate to = "/" /> : <ForgotPassword />} />
-        <Route path="/resetpassword" element={isLoggedIn ? <Navigate to = "/" /> : <ResetPassword />} />
+    <CartProvider>
+      <Router basename="/">
+        <Routes>
+          {/* Public Routes */}
+          <Route
+            path="/login"
+            element={
+              isLoggedIn ? (
+                <Navigate to="/" />
+              ) : (
+                <Login setIsLoggedIn={setIsLoggedIn} />
+              )
+            }
+          />
+          <Route
+            path="/signup"
+            element={isLoggedIn ? <Navigate to="/" /> : <SignUp />}
+          />
+          <Route
+            path="/forgotpassword"
+            element={isLoggedIn ? <Navigate to="/" /> : <ForgotPassword />}
+          />
+          <Route
+            path="/resetpassword"
+            element={isLoggedIn ? <Navigate to="/" /> : <ResetPassword />}
+          />
 
           {/* Protected Routes */}
-          <Route path="/*" element={isLoggedIn ? <PrivateRoutes /> : <Navigate to="/login" />} />
+          <Route
+            path="/*"
+            element={isLoggedIn ? <PrivateRoutes /> : <Navigate to="/login" />}
+          />
         </Routes>
       </Router>
+    </CartProvider>
   );
 }
 

@@ -30,30 +30,33 @@ function SignUp() {
     e.preventDefault();
     setError("");
     setIsLoading(true);
-
-        const formattedBirthday = formData.birthday
-            ? formData.birthday.split('T')[0]
-            : null;
-        const payload = {
-            email: formData.email,
-            password: formData.password,
-            birthday: formattedBirthday
-        };
-        
-        try {
-            const response = await registerUser(payload);
-            if (response.success) {
-                alert(response.message);
-                navigate("/login");
-            } else {
-                setError(response.message || "Registration failed, try again");
-            }
-        } catch (error) {
-            setError("An error occurred during registration. Please try again later.");
-        } finally {
-            setIsLoading(false);
-        }
+    console.log("Birthday:", formData.birthday, typeof formData.birthday);
+    const formattedBirthday =
+      formData.birthday instanceof Date
+        ? formData.birthday.toISOString().split("T")[0] // Converts to "YYYY-MM-DD"
+        : null;
+    const payload = {
+      email: formData.email,
+      password: formData.password,
+      birthday: formattedBirthday,
     };
+
+    try {
+      const response = await registerUser(payload);
+      if (response.success) {
+        alert(response.message);
+        navigate("/login");
+      } else {
+        setError(response.message || "Registration failed, try again");
+      }
+    } catch (error) {
+      setError(
+        "An error occurred during registration. Please try again later."
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="loginBox">
@@ -86,17 +89,17 @@ function SignUp() {
           required
         />
         <DatePicker
-                    selected={formData.birthday}
-                    onChange={handleDateChange}
-                    name="birthday"
-                    placeholderText="Birthday"
-                    dateFormat="yyyy/MM/dd"
-                    showYearDropdown
-                    scrollableYearDropdown
-                    yearDropdownItemNumber={100}
-                    showMonthDropdown
-                    required
-                />
+          selected={formData.birthday}
+          onChange={handleDateChange}
+          name="birthday"
+          placeholderText="Birthday"
+          dateFormat="yyyy/MM/dd"
+          showYearDropdown
+          scrollableYearDropdown
+          yearDropdownItemNumber={100}
+          showMonthDropdown
+          required
+        />
         <button type="submit" disabled={loading}>
           Sign Up
         </button>

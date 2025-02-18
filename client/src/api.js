@@ -2,6 +2,8 @@ const API_BASE_URL = "http://localhost:8000";
 const token = localStorage.getItem("token");
 
 export const registerUser = async (userData) => {
+  console.log("Sending userData:", JSON.stringify(userData, null, 2));
+
   try {
     const response = await fetch(`${API_BASE_URL}/api/register/`, {
       method: "POST",
@@ -9,21 +11,30 @@ export const registerUser = async (userData) => {
       body: JSON.stringify(userData),
     });
 
+    const responseText = await response.text(); // Read response as text first
+
     if (!response.ok) {
-      throw new Error("Registration failed");
+      console.error("Registration failed:", responseText);
+
+      // Try to parse JSON if possible, otherwise return the raw response
+      try {
+        const errorData = JSON.parse(responseText);
+        throw new Error(errorData.message || "Registration failed");
+      } catch {
+        throw new Error(responseText || "Registration failed");
+      }
     }
 
-    const data = await response.json();
+    const data = JSON.parse(responseText); // Parse JSON safely
 
     if (data.success) {
       localStorage.setItem("token", data.token);
-
       return data;
     }
 
     throw new Error(data.message || "Unknown error occurred");
   } catch (error) {
-    console.error("Registration error:", error);
+    console.error("Registration error:", error.message);
     throw error;
   }
 };
@@ -179,9 +190,9 @@ export const forgotPassword = async (formData) => {
     const response = await fetch(`${API_BASE_URL}/api/forgotpassword`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(formData)
+      body: JSON.stringify(formData),
     });
 
     if (!response.ok) {
@@ -193,16 +204,16 @@ export const forgotPassword = async (formData) => {
     console.log(error);
     throw error;
   }
-}
+};
 
 export const resetPassword = async (formData) => {
   try {
     const response = await fetch(`${API_BASE_URL}/api/resetpassword`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(formData)
+      body: JSON.stringify(formData),
     });
 
     if (!response.ok) {
@@ -214,12 +225,13 @@ export const resetPassword = async (formData) => {
     console.log(error);
     throw error;
   }
-}
+};
 
-export const deleteReview = async (reviewId) => { //BACKEND LOGIC HERE - Taha 
+export const deleteReview = async (reviewId) => {
+  //BACKEND LOGIC HERE - Taha
   try {
     const response = await fetch(`/api/reviews/${reviewId}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
     const data = await response.json();
     return data; // Make sure your backend returns { success: true } on success.
