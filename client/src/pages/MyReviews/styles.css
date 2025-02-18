@@ -30,7 +30,6 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     transition: transform 0.3s ease;
-
     align-items: center; /* Centers items horizontally */
 }
 
@@ -47,7 +46,6 @@
     padding: 1rem;
     background-color: #f8f8f8;
     text-align: center;
-
     display: flex;
     flex-direction: column;
     align-items: center; 
@@ -98,12 +96,19 @@
     .reviews-grid {
         grid-template-columns: 1fr;
     }
-
     .reviews-content {
         padding: 1rem;
     }
-
     .reviews-content h1 {
         font-size: 2rem;
     }
 }
+
+/* Added rule to fix overlapping review action buttons */
+.review-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem;
+}
+
