@@ -163,3 +163,16 @@ export const fetchMovieDetails = async (movieId) => {
     throw error;
   }
 };
+
+export const deleteReview = async (reviewId) => { //BACKEND LOGIC HERE - Taha 
+  try {
+    const response = await fetch(`/api/reviews/${reviewId}`, {
+      method: 'DELETE',
+    });
+    const data = await response.json();
+    return data; // Make sure your backend returns { success: true } on success.
+  } catch (error) {
+    console.error("Error deleting review:", error);
+    return { success: false, error };
+  }
+};
