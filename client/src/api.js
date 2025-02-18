@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = "https://gtmovies.onrender.com";
 const token = localStorage.getItem("token");
 
 export const registerUser = async (userData) => {
@@ -154,8 +154,18 @@ export const fetchMovieDetails = async (movieId) => {
     const response = await fetch(
       `http://api.themoviedb.org/3/movie/${movieId}?api_key=b7e53cd3f6fdf95ed3ec34f7bbf27823&language=en-US`
     );
+
     if (!response.ok) {
-      throw new Error("Failed to fetch movie details");
+      console.warn("Movie not found locally, fetching from TMDB...");
+
+      // If not found locally, fetch from TMDB
+      response = await fetch(
+        `https://api.themoviedb.org/3/movie/${id}?api_key=b7e53cd3f6fdf95ed3ec34f7bbf27823`
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch movie details from both sources");
+      }
     }
     return await response.json();
   } catch (error) {

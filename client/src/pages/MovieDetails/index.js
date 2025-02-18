@@ -1,49 +1,42 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import NavBar from "../../components/NavBar";
 import ReviewSection from "../../components/ReviewSection";
 import "./styles.css";
-import { CartUser } from "../../api";
 import ReviewPopup from "../../components/ReviewPopup";
+import { CartContext } from "../../components/CartContext"; // Import the context
 
 function MovieDetails({ setIsAuthenticated }) {
-  const [movie, setMovie] = useState([null]); // setting up movie request
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
+  const [movie, setMovie] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const { id } = useParams();
-  const [email, setEmail] = useState("");
-  const token = localStorage.getItem("token");
   const [isReviewPopupOpen, setIsReviewPopupOpen] = useState(false);
+  const token = localStorage.getItem("token");
+
+  // Access the updateCart function from our context
+  const { updateCart } = useContext(CartContext);
 
   useEffect(() => {
     fetchMovies();
     window.scrollTo(0, 0);
-  }, [id]); //request movies
+  }, [id]);
 
   const fetchMovies = async () => {
     try {
-      // Try fetching the movie from the local database
-      let response = await fetch(
-        `http://localhost:8000/api/custommovies/${id}/`
-      );
-
+      let response = await fetch(`http://localhost:8000/api/custommovies/${id}/`);
       if (!response.ok) {
         console.warn("Movie not found locally, fetching from TMDB...");
-
-        // If not found locally, fetch from TMDB
         response = await fetch(
           `https://api.themoviedb.org/3/movie/${id}?api_key=b7e53cd3f6fdf95ed3ec34f7bbf27823`
         );
-
         if (!response.ok) {
           throw new Error("Failed to fetch movie details from both sources");
         }
       }
-
       const data = await response.json();
-      // Ensure correct image formatting if coming from TMDB
       const movieData = {
-        id: data.id, // ✅ Match Django model field name
+        id: data.id,
         title: data.title,
         rating: data.vote_average || data.rating,
         description: data.description || data.overview,
@@ -54,7 +47,7 @@ function MovieDetails({ setIsAuthenticated }) {
             ? `https://image.tmdb.org/t/p/w500${data.poster_path}`
             : ""),
         backdrop:
-          data.backdrop || // Check if it's available in your local database
+          data.backdrop ||
           `https://image.tmdb.org/t/p/original${data.backdrop_path}`,
       };
 
@@ -69,44 +62,36 @@ function MovieDetails({ setIsAuthenticated }) {
 
   const addToCart = async (movieTitle, movieId, movieImage, price) => {
     try {
-      // Fetch user email from backend
       const emailResponse = await fetch(
         `http://localhost:8000/api/email/${token}/`
       );
       if (!emailResponse.ok) throw new Error("Failed fetching user email");
-
       const { user: userEmail } = await emailResponse.json();
 
-      // Check if the movie exists in the local database
       let movieData;
       const localMovieResponse = await fetch(
         `http://localhost:8000/api/custommovies/${movieId}/`
       );
-
       if (localMovieResponse.ok) {
         movieData = await localMovieResponse.json();
       } else {
-        // Fetch from TMDB if not found in local DB
         console.warn("Movie not found locally, fetching from TMDB...");
         const tmdbResponse = await fetch(
           `https://api.themoviedb.org/3/movie/${movieId}?api_key=b7e53cd3f6fdf95ed3ec34f7bbf27823`
         );
         if (!tmdbResponse.ok) throw new Error("Movie not found in TMDB either");
-
         movieData = await tmdbResponse.json();
       }
 
-      // Construct request payload using available movie data
       const payload = {
         movie_id: movieId,
-        movie_title: movieData.title || movieTitle, // Use TMDB title if available
+        movie_title: movieData.title || movieTitle,
         image: movieData.poster_path
           ? `https://image.tmdb.org/t/p/w500${movieData.poster_path}`
-          : movieImage, // Prefer TMDB image if found
-        price: price || 9.99, // Default price if not provided
+          : movieImage,
+        price: price || 9.99,
       };
 
-      // Send movie data to the cart API
       const cartResponse = await fetch(
         `http://localhost:8000/api/cart/${userEmail}/`,
         {
@@ -122,7 +107,11 @@ function MovieDetails({ setIsAuthenticated }) {
         throw new Error("Failed adding movie to cart");
       }
 
+      // Optionally, you can process cartData here:
       const cartData = await cartResponse.json();
+
+      // Refresh the cart in the global context after a successful add
+      updateCart();
     } catch (error) {
       console.error("Error:", error);
     }
@@ -151,7 +140,9 @@ function MovieDetails({ setIsAuthenticated }) {
             </button>
             <button
               className="btn"
-              onClick={() => addToCart(movie.title, movie.id, movie.image, 10)}
+              onClick={() =>
+                addToCart(movie.title, movie.id, movie.image, 10)
+              }
             >
               Add to Cart
             </button>
@@ -167,4 +158,5 @@ function MovieDetails({ setIsAuthenticated }) {
     </div>
   );
 }
+
 export default MovieDetails;

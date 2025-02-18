@@ -1,10 +1,11 @@
 import "./profilestyles.css";
 import logoImage from "../../assets/images/buzz.svg.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 const ProfilePage = () => {
   const [email, setEmail] = useState("");
+  const navigate = useNavigate();
 
   const fetchEmail = async () => {
     try {
@@ -30,7 +31,7 @@ const ProfilePage = () => {
     <div className="container">
       <div className="navigation">
         <div className="backBtn">
-          <button>
+          <button onClick={() => navigate(-1)}>
             <p>Go back</p>
           </button>
         </div>

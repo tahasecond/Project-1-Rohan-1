@@ -4,11 +4,13 @@ import NavBar from "../../components/NavBar";
 
 const MyMoviesPage = () => {
   const [movies, setMovies] = useState([]);
+  const [total, setTotal] = useState();
   const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchMovies = async () => {
       try {
+        // First, get the user email using the token
         const emailResponse = await fetch(
           `http://localhost:8000/api/email/${token}/`
         );
@@ -17,13 +19,14 @@ const MyMoviesPage = () => {
         const emailData = await emailResponse.json();
         const userEmail = emailData.user;
 
+        // Next, fetch the movie orders for the user
         const response = await fetch(
           `http://localhost:8000/api/orders/${userEmail}/`
         );
         const data = await response.json();
 
         if (data.success) {
-          setMovies(data.orders); // Set movies from the order data
+          setMovies(data.orders);
         } else {
           console.error("Error fetching movies:", data.message);
         }
@@ -33,63 +36,80 @@ const MyMoviesPage = () => {
     };
 
     fetchMovies();
-  }, []);
+  }, [token]);
 
+  // Download the image for the order
   const downloadImage = (imageUrl) => {
     const link = document.createElement("a");
-    link.href = imageUrl; // Image URL
-    link.download = imageUrl.split("/").pop(); // Suggests file name from the URL
+    link.href = imageUrl;
+    link.download = imageUrl.split("/").pop();
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
-  const goHome = () => {
-    window.location.href = "http://localhost:8000/"; // Navigate to homepage
+  useEffect(() => {
+    calculateTotal();
+  }, [movies]);
+
+  const calculateTotal = () => {
+    const count = movies.length; // No need for a loop, just use length
+    setTotal(count * 10);
   };
 
   return (
-    <div
-      className="container"
-      style={{ flexDirection: "column", backgroundColor: "white" }}
-    >
-      <div className="pageHeader">
+    <div className="my-movies-page">
+      <NavBar />
+      <div className="movies-content">
         <h1>My Movies</h1>
-        <button onClick={goHome} className="homeButton">
-          Back to Homepage
-        </button>
-      </div>
-      <div className="moviesGrid">
-        {movies.map((order, index) => (
-          <div key={index} className="movieContainer">
-            <div className="movie">
-              {order.image && order.image !== "0" ? (
-                <img
-                  src={order.image}
-                  alt={order.movie_title || "Untitled Movie"}
-                  className="movieImage"
-                />
-              ) : (
-                <div className="noImage">No Image Available</div>
-              )}
-            </div>
-            {/* Movie Title */}
-            <div className="movieTitle">
-              {order.movie_title && order.movie_title !== "0"
-                ? order.movie_title
-                : "Untitled Movie"}
-            </div>
-            <div className="btnContainer">
-              <button onClick={() => downloadImage(order.image)}>
-                Download
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+        {movies.length > 0 ? (
+          <>
+            <div className="movies-grid">
+              {movies.map((order, index) => (
+                <div key={index} className="movie-card">
+                  <div className="movie-info">
+                    {order.image && order.image !== "0" ? (
+                      <img
+                        src={order.image}
+                        alt={order.movie_title || "Untitled Movie"}
+                        className="movie-poster"
+                      />
+                    ) : (
+                      <div className="no-image">No Image Available</div>
+                    )}
 
-      <div className="extendedFooter">
-        <p>Engineered by Yellow Jacket Spirit</p>
+                    {order.timestamp && (
+                      <p className="order-time">
+                        Ordered on: {order.timestamp.substring(0, 10)}
+                      </p>
+                    )}
+
+                    <h3>
+                      {order.movie_title && order.movie_title !== "0"
+                        ? order.movie_title
+                        : "Untitled Movie"}
+                    </h3>
+                  </div>
+                  <div className="btnContainer">
+                    <button onClick={() => downloadImage(order.image)}>
+                      Download
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Total Spent Calculation */}
+            <div className="total-spent">
+              <h2>Total Spent: ${total}</h2>
+            </div>
+          </>
+        ) : (
+          <div className="no-movies">
+            <p>You haven't ordered any movies yet.</p>
+            <p>Start exploring movies to see them here!</p>
+          </div>
+        )}
       </div>
     </div>
   );

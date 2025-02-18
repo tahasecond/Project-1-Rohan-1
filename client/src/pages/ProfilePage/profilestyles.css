@@ -1,12 +1,13 @@
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 .container {
     background-color: #141619;
-    flex-direction: row;
     display: flex;
+    flex-direction: row;
     height: 100vh;
     width: 100%;
 }
@@ -14,213 +15,101 @@
 .navigation {
     background-color: #111114;
     display: flex;
-    flex: 1;
     flex-direction: column;
+    flex: 1;
     height: 100vh;
+    padding: 1rem;
 }
 
 .backBtn {
-    background-color: #111114;
     display: flex;
-    flex: 1;
     justify-content: center;
     align-items: center;
+    margin-bottom: 1rem;
 }
 
 .backBtn button {
-    height: 40px;
-    width: 105px;
-    border: 1px solid white;
-    border-radius: 20px;
-    background-color: white;
+    background-color: #a4925a;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
-.backBtn button p {
-    background-color: white;
-    color: black;
-}
-
-.statement {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #111114;
-    flex: 1;
-}
-
-.statement p {
-    font-size: 12px;
-    background-color: #111114;
-    color: #b3a369;
+.backBtn button:hover {
+    background-color: #b3a369;
 }
 
 .navSelections {
-    padding-top: 30px;
-    border-top: 2px solid rgba(255, 255, 255, .2);
-    background-color: #111114;
-    display: flex;
-    flex-direction: row;
-    flex: 7;
-    justify-content: center;
-    align-items: flex-start;
+    flex: 1;
 }
 
-.navSelections ul li{
-    list-style-type: none;
-    background-color: #111114;
-    padding-bottom: 35px;
+.navSelections ul {
+    list-style: none;
+    padding: 0;
+}
+
+.navSelections li {
+    margin: 1rem 0;
 }
 
 .navSelections a {
-    font-weight: 400;
-    font-size: 20px;
-    background-color: #111114;
+    color: white;
     text-decoration: none;
-    color: white;
+    font-weight: bold;
 }
 
-.profileContainer {
-    flex-direction: column;
-    flex: 5;
-    display: flex;
-    height: 100vh;
-}
-
-.headerContainer {
-    font-size: 35px;
-    color: white;
-    padding-left: 80px;
-    align-items: center;
-    display: flex;
-    flex: 1;
-}
-
-
-.contentContainer {
-    display: flex;
-    flex: 5;
-    justify-content: center;
-    align-items: center;
-}
-
-.containerBox {
-    padding: 30px;
-    flex-direction: column;
-    display: flex;
-    height: 70vh;
-    width: 120vh;
-    border: 2px solid rgba(255, 255, 255, .8);
-    background-color: #111114;
-    border-radius: 20px;
-}
-
-.idContainer {
-    background-color: transparent;
-    gap: 20px;
-    padding-left: 45px;
-    display: flex;
-    align-items: center;
-    flex: 1;
-    justify-content: space-between;
-    padding-bottom: 20px;
-}
-
-.idContainer h4 {
-    background-color: transparent;
-    font-size: 25px;
-    color: white;
-    font-weight: 200;
-}
-
-.pfp {
-    background-color: transparent;
-    border: 1px solid rgba(255, 255, 255, .8);
-    border-radius: 60px;
-    height: 12vh;
-    display: flex;
-    width: 12vh;
-    justify-content: center;
-    align-items: center;
-}
-
-.pfp img {
-    justify-content: center;
-    align-items: center;
-    height: 9vh;
-    width: 9vh;
-    background-color: transparent;
-}
-
-.leftId {
-    background-color: transparent;
-    gap: 20px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
-
-.accountContainer {
-    color: white;
-    background-color: transparent;
-    flex: 5;
-    display: flex;
-    border-top: 1px solid rgba(255, 255, 255, .4);
-    padding: 30px;
-    flex-direction: column;
-}
-
-.changePfp button {
-    height: 5vh;
-    width: 15vh;
-    border: 1px solid white;
-    background-color: rgba(255, 255, 255, .8);
-    border-radius: 20px;
-    font-size: 12px;
-}
-
-.changePfp button p {
-    background-color: transparent;
-}
-
-.userData {
-    background-color: transparent;
-}
-
-.accountDetailBox {
-    display: flex;
-    background-color: transparent;
-    flex: 1;
-    justify-content: space-between;
-    flex-direction: row;
-}
-
-.accountDetailBox h5 {
-    background-color: transparent;
-    font-size: 18px;
-    font-weight: 800;
-}
-
-.accountDetailBox p {
-    background-color: transparent;
-    padding-top: 30px;
-    font-size: 30px;
-}
-
-.changeInfoBtn {
-    background-color: transparent;
-}
-
-.changeInfoBtn button {
-    color: black;
-    border: 1px solid white;
-    border-radius: 15px;
-    height: 5vh;
-    width: 15vh;
-    background-color: white;
-    font-size: 12px;
+.statement {
+    text-align: center;
+    margin-top: auto;
 }
 
 .buzzImage {
     height: 14px;
     width: 14px;
+}
+
+.profileContainer {
+    flex: 3;
+    padding: 2rem;
+    background-color: #f8f8f8;
+    border-radius: 12px;
+    margin: 1rem;
+}
+
+.headerContainer {
+    margin-bottom: 2rem;
+}
+
+.contentContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.containerBox {
+    width: 100%;
+    max-width: 600px;
+}
+
+.accountContainer {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+}
+
+.accountDetailBox {
+    margin-bottom: 1rem;
+}
+
+.userData h5 {
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.userData p {
+    font-size: 1rem;
+    color: #666;
 }

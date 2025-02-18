@@ -1,3 +1,4 @@
+// App.js
 import "./App.css";
 import LandingPage from "./pages/LandingPage";
 import CheckOut from "./pages/CheckOut";
@@ -19,6 +20,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import { isAuthenticated } from "./api";
+import { CartProvider } from "./components/CartContext"; // Import our Cart Context Provider
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(isAuthenticated());
@@ -35,24 +37,24 @@ function App() {
         <Route path="/forgotpassword" element={isLoggedIn ? <Navigate to = "/" /> : <ForgotPassword />} />
         <Route path="/resetpassword" element={isLoggedIn ? <Navigate to = "/" /> : <ResetPassword />} />
 
-        {/* Protected Routes */}
-        <Route path = "/*" element = {isLoggedIn ? <PrivateRoutes /> : <Navigate to = "/login" />} />
-      </Routes>
-    </Router>
+          {/* Protected Routes */}
+          <Route path="/*" element={isLoggedIn ? <PrivateRoutes /> : <Navigate to="/login" />} />
+        </Routes>
+      </Router>
   );
 }
 
 function PrivateRoutes() {
   return (
     <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/moviedetails/:id" element={<MovieDetails />} />
-        <Route path="/mymoviespage" element={<MyMoviesPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/search" element={<SearchPage />} />
-        <Route path="/checkout" element={<CheckOut />} />
-        <Route path="/myreviews" element={<MyReviews />} />
-        <Route path="*" element={<Navigate to="/" />} />
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/moviedetails/:id" element={<MovieDetails />} />
+      <Route path="/mymoviespage" element={<MyMoviesPage />} />
+      <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/search" element={<SearchPage />} />
+      <Route path="/checkout" element={<CheckOut />} />
+      <Route path="/myreviews" element={<MyReviews />} />
+      <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
 }
