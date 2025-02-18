@@ -1,3 +1,4 @@
+// App.js
 import "./App.css";
 import LandingPage from "./pages/LandingPage";
 import CheckOut from "./pages/CheckOut";
@@ -8,7 +9,6 @@ import SignUp from "./pages/SignUp";
 import MyMoviesPage from "./pages/MyMoviesPage";
 import ProfilePage from "./pages/ProfilePage";
 import MyReviews from "./pages/MyReviews";
-
 import { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
@@ -17,6 +17,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import { isAuthenticated } from "./api";
+import { CartProvider } from "./components/CartContext"; // Import our Cart Context Provider
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(isAuthenticated());
@@ -25,30 +26,32 @@ function App() {
   }, []);
 
   return (
-    <Router basename="/">
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/login" element={isLoggedIn ? <Navigate to = "/" /> : <Login setIsLoggedIn = {setIsLoggedIn} />} />
-        <Route path="/signup" element={isLoggedIn ? <Navigate to = "/" /> : <SignUp />} />
+    <CartProvider>
+      <Router basename="/">
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/login" element={isLoggedIn ? <Navigate to="/" /> : <Login setIsLoggedIn={setIsLoggedIn} />} />
+          <Route path="/signup" element={isLoggedIn ? <Navigate to="/" /> : <SignUp />} />
 
-        {/* Protected Routes */}
-        <Route path = "/*" element = {isLoggedIn ? <PrivateRoutes /> : <Navigate to = "/login" />} />
-      </Routes>
-    </Router>
+          {/* Protected Routes */}
+          <Route path="/*" element={isLoggedIn ? <PrivateRoutes /> : <Navigate to="/login" />} />
+        </Routes>
+      </Router>
+    </CartProvider>
   );
 }
 
 function PrivateRoutes() {
   return (
     <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/moviedetails/:id" element={<MovieDetails />} />
-        <Route path="/mymoviespage" element={<MyMoviesPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/search" element={<SearchPage />} />
-        <Route path="/checkout" element={<CheckOut />} />
-        <Route path="/myreviews" element={<MyReviews />} />
-        <Route path="*" element={<Navigate to="/" />} />
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/moviedetails/:id" element={<MovieDetails />} />
+      <Route path="/mymoviespage" element={<MyMoviesPage />} />
+      <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/search" element={<SearchPage />} />
+      <Route path="/checkout" element={<CheckOut />} />
+      <Route path="/myreviews" element={<MyReviews />} />
+      <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
 }

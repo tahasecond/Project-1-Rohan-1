@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from "react";
+// CheckOut.js
+import React, { useState, useEffect, useContext } from "react";
 import NavBar from "../../components/NavBar";
 import "./styles.css";
+import { CartContext } from "../../components/CartContext"; // Import our Cart context
 
 const CheckOut = ({ setIsAuthenticated }) => {
   const [formData, setFormData] = useState({
@@ -12,40 +14,19 @@ const CheckOut = ({ setIsAuthenticated }) => {
     state: "",
     zipCode: "",
   });
-  const [cart, setCart] = useState([]);
+
+  // Use the shared cart state and updater
+  const { cart, updateCart } = useContext(CartContext);
   const token = localStorage.getItem("token");
 
+  // On mount, update the cart data from the backend.
   useEffect(() => {
-    fetchCart();
-  }, []);
-
-  const fetchCart = async () => {
-    try {
-      const emailResponse = await fetch(
-        `http://localhost:8000/api/email/${token}/`
-      );
-      if (!emailResponse.ok) {
-        throw new Error("Failed to fetch user email");
-      }
-      const emailData = await emailResponse.json();
-      const userEmail = emailData.user;
-
-      const cartResponse = await fetch(
-        `http://localhost:8000/api/cart/${userEmail}/`
-      );
-      if (!cartResponse.ok) {
-        throw new Error("Failed to fetch cart");
-      }
-      const data = await cartResponse.json();
-
-      setCart(data.cart);
-    } catch (error) {
-      console.error("Error fetching cart:", error);
-    }
-  };
+    updateCart();
+  }, [updateCart]);
 
   const deleteFromCart = async (movieId) => {
     try {
+      // Fetch user email
       const emailResponse = await fetch(
         `http://localhost:8000/api/email/${token}/`
       );
@@ -55,16 +36,17 @@ const CheckOut = ({ setIsAuthenticated }) => {
       const emailData = await emailResponse.json();
       const userEmail = emailData.user;
 
+      // Delete the movie from the cart
       const response = await fetch(
         `http://localhost:8000/api/cart/${userEmail}/${movieId}/`,
         { method: "DELETE" }
       );
-
       if (!response.ok) {
         throw new Error("Failed to remove movie from cart");
       }
 
-      setCart(cart.filter((movie) => movie.movie_id !== movieId));
+      // Refresh the cart in the global context
+      updateCart();
     } catch (error) {
       console.error("Error removing movie from cart:", error);
     }
@@ -83,7 +65,7 @@ const CheckOut = ({ setIsAuthenticated }) => {
       const currentWalletBalance = walletData.wallet;
 
       // Step 2: Calculate the total price of the cart
-      const totalAmount = cart.reduce(
+      const totalAmount = cart.items.reduce(
         (total, movie) => total + (movie.price || 0),
         0
       );
@@ -104,8 +86,8 @@ const CheckOut = ({ setIsAuthenticated }) => {
       const emailData = await emailResponse.json();
       const userEmail = emailData.user;
 
-      // Delete items from the cart
-      for (let movie of cart) {
+      // Delete each movie in the cart
+      for (let movie of cart.items) {
         const deleteResponse = await fetch(
           `http://localhost:8000/api/cart/${userEmail}/${movie.movie_id}/`,
           { method: "DELETE" }
@@ -130,12 +112,7 @@ const CheckOut = ({ setIsAuthenticated }) => {
       }
 
       // Step 6: Create orders for the movies in the cart
-
-      for (let movie of cart) {
-        console.log("TITLE: " + movie.title);
-        console.log("ID: " + movie.movie_id);
-        console.log("image: " + movie.image);
-        console.log("TITLE2: " + movie.movie_title);
+      for (let movie of cart.items) {
         const orderResponse = await fetch(`http://localhost:8000/api/order/`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -148,14 +125,14 @@ const CheckOut = ({ setIsAuthenticated }) => {
         });
 
         if (!orderResponse.ok) {
-          const errorData = await orderResponse.text(); // Log response text
+          const errorData = await orderResponse.text();
           console.error("Order creation failed:", errorData);
           throw new Error(`Failed to create order: ${errorData}`);
         }
       }
 
-      // Clear the cart after successful checkout
-      setCart([]);
+      // Clear the cart after successful checkout by refreshing the global cart
+      updateCart();
 
       alert("Purchase completed successfully!");
     } catch (error) {
@@ -185,8 +162,8 @@ const CheckOut = ({ setIsAuthenticated }) => {
           <div className="order-summary">
             <h2>Order Summary</h2>
             <div className="order-summary">
-              {cart.length > 0 ? (
-                cart.map((movie) => (
+              {cart.items && cart.items.length > 0 ? (
+                cart.items.map((movie) => (
                   <div key={movie.movie_id} className="movie-details">
                     <img
                       src={movie.image}
@@ -211,9 +188,11 @@ const CheckOut = ({ setIsAuthenticated }) => {
               <div className="total-section">
                 <h3>
                   Total: $
-                  {cart
-                    .reduce((total, movie) => total + (movie.price || 0), 0)
-                    .toFixed(2)}
+                  {cart.items
+                    ? cart.items
+                        .reduce((total, movie) => total + (movie.price || 0), 0)
+                        .toFixed(2)
+                    : "0.00"}
                 </h3>
               </div>
             </div>
