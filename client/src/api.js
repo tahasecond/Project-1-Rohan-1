@@ -20,7 +20,7 @@ export const registerUser = async (userData) => {
 
       return data;
     }
-    //asdf
+
     throw new Error(data.message || "Unknown error occurred");
   } catch (error) {
     console.error("Registration error:", error);
@@ -145,27 +145,6 @@ export const leaveReview = async (userData) => {
     return await response.json();
   } catch (error) {
     console.log(error);
-    throw error;
-  }
-};
-
-export const resetPassword = async (passwords) => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/reset_password/`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Token ${token}`,
-      },
-      body: JSON.stringify(passwords),
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to reset password");
-    }
-    return await response.json();
-  } catch (error) {
-    console.error(error);
     throw error;
   }
 };

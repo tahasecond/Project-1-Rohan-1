@@ -1,24 +1,18 @@
-import json
-import logging
-import requests
+import json, requests
 from django.shortcuts import get_object_or_404, render
 from django.http import JsonResponse
 from rest_framework.response import Response
-from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework import status
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
-from django.contrib.auth.hashers import check_password
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
-from server.models import Cart, Movie
-from rest_framework.decorators import api_view, permission_classes
-from server.serializers import MovieSerializer
-from rest_framework.exceptions import AuthenticationFailed
+from server.models import Cart, Movie, Review, Order, UserProfile
+from rest_framework.decorators import api_view
+from server.serializers import MovieSerializer, OrderSerializer
 from django.utils.timezone import now
-
-logger = logging.getLogger(__name__)
-
+from rest_framework.authentication import TokenAuthentication
+from django.contrib.auth.hashers import check_password
 
 def index(request):
     return render(request, "index.html")
@@ -32,7 +26,6 @@ class RegistrationView(APIView):
             password = request.data.get("password")
 
             if User.objects.filter(email=email).exists():
-                logger.warning(f"Registration attempt with existing email: {email}")
                 return JsonResponse(
                     {"success": False, "message": "Email already exists"},
                     status=status.HTTP_400_BAD_REQUEST,
@@ -41,7 +34,6 @@ class RegistrationView(APIView):
             user = User.objects.create_user(
                 username=username, email=email, password=password
             )
-            logger.info(f"New user registered: {email}")
             token, created = Token.objects.get_or_create(user=user)
             if not created:
                 return JsonResponse(
@@ -58,7 +50,6 @@ class RegistrationView(APIView):
             )
 
         except Exception as e:
-            logger.exception(f"Unexpected error during registration: {str(e)}")
             return Response(
                 {
                     "success": False,
@@ -66,10 +57,6 @@ class RegistrationView(APIView):
                 },
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
-
-
-from rest_framework.authentication import TokenAuthentication
-
 
 class EmailView(APIView):
     def get(self, request, token, format=None):
@@ -91,14 +78,12 @@ class LoginView(APIView):
             try:
                 user = User.objects.get(email=email)
             except User.DoesNotExist:
-                logger.warning(f"Login attempt with non-existent email: {email}")
                 return Response(
                     {"success": False, "message": "User not found"},
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
             if check_password(password, user.password):
-                logger.info(f"User logged in: {email}")
                 token = Token.objects.get(user=user)
                 return Response(
                     {
@@ -109,14 +94,12 @@ class LoginView(APIView):
                     status=status.HTTP_200_OK,
                 )
 
-            logger.warning(f"Invalid login attempt for email: {email}")
             return Response(
                 {"success": False, "message": "Invalid Login Credentials"},
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 
         except Exception as e:
-            logger.exception(f"Unexpected error during login: {str(e)}")
             return Response(
                 {
                     "success": False,
@@ -265,14 +248,6 @@ def get_movie_details(request, movie_id):
         return JsonResponse(movie)
     return JsonResponse({"error": "Failed to fetch movie details"}, status=500)
 
-
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
-from .models import Movie, Order, UserProfile
-from .serializers import MovieSerializer, OrderSerializer
-
-
 @api_view(["GET", "DELETE"])
 def movie_detail(request, id):  # ✅ Change movie_id to id
     try:
@@ -349,23 +324,6 @@ def wallet_view(request, token):
     except Token.DoesNotExist:
         return Response({"error": "Invalid token"}, status=status.HTTP_404_NOT_FOUND)
 
-
-from django.shortcuts import get_object_or_404
-from django.http import JsonResponse
-from rest_framework.views import APIView
-from rest_framework import status
-from .models import User, Movie, Order
-from django.utils.timezone import now
-
-
-from django.shortcuts import get_object_or_404
-from django.http import JsonResponse
-from rest_framework.views import APIView
-from rest_framework import status
-from .models import User, Order
-from django.utils.timezone import now
-
-
 class CreateOrderView(APIView):
     def post(self, request):
         try:
@@ -420,9 +378,7 @@ class GetUserOrdersView(APIView):
                 {"success": False, "message": str(e)},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-
-from server.models import Review
-
+        
 class LeaveReview(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -495,40 +451,4 @@ class FetchUserReviews(APIView):
                 "success": False,
                 "message": "Failed to fetch user reviews"
             })
-        
-class ResetPasswordView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-    def put (self, request):
-        try:
-            user = request.user
-            currentPassword = request.data.get("currentPassword")
-            if not check_password(currentPassword, user.password):
-                return Response(
-                    {
-                        "success": False, 
-                        "error": "Old password is incorrect"
-                    }, 
-                    status = status.HTTP_400_BAD_REQUEST
-                )
 
-            newPassword = request.data.get("newPassword")
-            user.set_password(newPassword)
-            user.save()
-
-            return Response(
-            {
-                "success": True,
-                "message": "Reset password successfully"
-            },
-                status = status.HTTP_200_OK
-            )
-        except Exception as e:
-            logger.error(f"Error in ResetPasswordView: {str(e)}")
-            return Response(
-                {
-                    "success": False,
-                    "message": "Failed to reset password"
-                },
-                    status = status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
