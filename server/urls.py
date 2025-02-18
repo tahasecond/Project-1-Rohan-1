@@ -15,7 +15,9 @@ from .views import (
     GetUserOrdersView,
     LeaveReview,
     FetchUserReviews,
-    FetchMovieReviews
+    FetchMovieReviews,
+    ForgotPassword,
+    ResetPassword
 )
 from django.contrib.auth import views as auth_views
 
@@ -39,6 +41,9 @@ urlpatterns = [
     path("api/leave_review/", LeaveReview.as_view(), name = "leave_review"),
     path("api/fetch_user_reviews/<str:token>/", FetchUserReviews.as_view(), name = "fetch_user_reviews"),
     path("api/fetch_movie_reviews/<int:id>/", FetchMovieReviews.as_view(), name = "fetch_movie_reviews"),
+
+    path("api/forgotpassword", ForgotPassword.as_view(), name = "forgotpassword"),
+    path("api/resetpassword", ResetPassword.as_view(), name = "resetpassword"),
 
     re_path(
         r"^(?!api/).*", TemplateView.as_view(template_name="index.html")

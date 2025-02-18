@@ -42,6 +42,7 @@ class Review(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    birthday = models.DateField()
     wallet = models.DecimalField(
         max_digits=10, decimal_places=2, default=10.00
     )  # Stores user balance

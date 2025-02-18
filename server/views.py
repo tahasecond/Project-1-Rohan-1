@@ -30,7 +30,7 @@ class RegistrationView(APIView):
                     {"success": False, "message": "Email already exists"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-
+            
             user = User.objects.create_user(
                 username=username, email=email, password=password
             )
@@ -40,6 +40,13 @@ class RegistrationView(APIView):
                     {"success": False, "message": "Token already exists."},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
+            
+            user_profile = UserProfile.objects.create(
+                user = user,
+                birthday = request.data.get("birthday"),
+                wallet = 10.00
+            )
+
             return JsonResponse(
                 {
                     "success": True,
@@ -57,17 +64,6 @@ class RegistrationView(APIView):
                 },
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
-
-class EmailView(APIView):
-    def get(self, request, token, format=None):
-        try:
-            # Authenticate user using token
-            user_token = Token.objects.get(key=token)
-            user = user_token.user
-            return JsonResponse({"user": user.email})
-        except Token.DoesNotExist:
-            return JsonResponse({"error": "Invalid token"}, status=401)
-
 
 class LoginView(APIView):
     def post(self, request):
@@ -107,6 +103,16 @@ class LoginView(APIView):
                 },
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+
+class EmailView(APIView):
+    def get(self, request, token, format=None):
+        try:
+            # Authenticate user using token
+            user_token = Token.objects.get(key=token)
+            user = user_token.user
+            return JsonResponse({"user": user.email})
+        except Token.DoesNotExist:
+            return JsonResponse({"error": "Invalid token"}, status=401)
 
 
 class CartView(APIView):
@@ -452,3 +458,53 @@ class FetchUserReviews(APIView):
                 "message": "Failed to fetch user reviews"
             })
 
+class ForgotPassword(APIView):
+    def post(self, request):
+        try:
+            email = request.data.get("email")
+            birthday = request.data.get("birthday")
+
+            user = User.objects.get(email = email)
+            user_profile = get_object_or_404(UserProfile, user = user)
+            
+            if birthday == user_profile.birthday:
+                return Response({
+                    "successs": True,
+                    "message": "Verified to now reset password!"
+                })
+            
+            return Response({
+                "success": False,
+                "message": "Failed to verify credentials"
+            })
+        except Exception as e:
+            return Response({
+                "success": False,
+                "message": "Failed to verify forgot password credentials"
+            })
+
+class ResetPassword(APIView):
+    def post(self, request):
+        try:
+            email = request.data.get("email")
+            password = request.data.get("password")
+
+            try:
+                user = User.objects.get(email = email)
+            except User.DoesNotExist:
+                return Response(
+                    {"success": False, "message": "User not found"},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+            
+            user.password = password
+            user.save()
+            return Response({
+                "success": True,
+                "message": "Updated password successfully"
+            })
+        except Exception as e:
+            return Response({
+                "success": False,
+                "message": "Failed to reset password, unknown error occured"
+            })

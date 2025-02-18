@@ -5,9 +5,11 @@ import MovieDetails from "./pages/MovieDetails";
 import SearchPage from "./pages/SearchPage";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
+import ForgotPassword from "./pages/ForgotPassword";
 import MyMoviesPage from "./pages/MyMoviesPage";
 import ProfilePage from "./pages/ProfilePage";
 import MyReviews from "./pages/MyReviews";
+import ResetPassword from "./pages/ResetPassword";
 
 import { useState, useEffect } from "react";
 import {
@@ -30,6 +32,8 @@ function App() {
         {/* Public Routes */}
         <Route path="/login" element={isLoggedIn ? <Navigate to = "/" /> : <Login setIsLoggedIn = {setIsLoggedIn} />} />
         <Route path="/signup" element={isLoggedIn ? <Navigate to = "/" /> : <SignUp />} />
+        <Route path="/forgotpassword" element={isLoggedIn ? <Navigate to = "/" /> : <ForgotPassword />} />
+        <Route path="/resetpassword" element={isLoggedIn ? <Navigate to = "/" /> : <ResetPassword />} />
 
         {/* Protected Routes */}
         <Route path = "/*" element = {isLoggedIn ? <PrivateRoutes /> : <Navigate to = "/login" />} />
