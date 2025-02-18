@@ -15,7 +15,7 @@ const ReviewBox = ({ name, rating, description }) => {
           {[...Array(5)].map((_, index) => (
             <i
               key={index}
-              className={`fas fa-star ${index < rating ? "" : "far"}`} 
+              className={`fas fa-star ${index < rating ? "filled" : "empty"}`} 
             ></i>
           ))}
         </div>
