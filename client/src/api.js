@@ -20,7 +20,7 @@ export const registerUser = async (userData) => {
 
       return data;
     }
-
+    //asdf
     throw new Error(data.message || "Unknown error occurred");
   } catch (error) {
     console.error("Registration error:", error);
@@ -83,20 +83,22 @@ export const CartUser = async (token) => {
 
 export const fetchUserReviews = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/fetch_user_reviews/${token}/`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json"
+    const response = await fetch(
+      `${API_BASE_URL}/api/fetch_user_reviews/${token}/`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
-    });
+    );
 
     if (!response.ok) {
-      throw new Error ("Failed fetching reviews");
+      throw new Error("Failed fetching reviews");
     }
 
-    return await response.json();    
-  }
-  catch (error) {
+    return await response.json();
+  } catch (error) {
     console.log(error);
     throw error;
   }
@@ -104,20 +106,22 @@ export const fetchUserReviews = async () => {
 
 export const fetchMovieReviews = async (movieId) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/fetch_movie_reviews/${movieId}/`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json"
-      },
-    });
+    const response = await fetch(
+      `${API_BASE_URL}/api/fetch_movie_reviews/${movieId}/`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (!response.ok) {
-      throw new Error ("Failed fetching reviews");
+      throw new Error("Failed fetching reviews");
     }
 
     return await response.json();
-  }
-  catch (error) {
+  } catch (error) {
     console.log(error);
     throw error;
   }
@@ -127,15 +131,15 @@ export const leaveReview = async (userData) => {
   try {
     const response = await fetch(`${API_BASE_URL}/api/leave_review/`, {
       method: "POST",
-      headers: { 
+      headers: {
         "Content-Type": "application/json",
-        "Authorization": `Token ${token}`
-       },
-      body: JSON.stringify(userData)
+        Authorization: `Token ${token}`,
+      },
+      body: JSON.stringify(userData),
     });
 
     if (!response.ok) {
-      throw new Error ("Failed leaving review");
+      throw new Error("Failed leaving review");
     }
 
     return await response.json();
@@ -151,13 +155,13 @@ export const resetPassword = async (passwords) => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Token ${token}`
+        Authorization: `Token ${token}`,
       },
-      body: JSON.stringify(passwords)
+      body: JSON.stringify(passwords),
     });
 
-    if(!response.ok) {
-      throw new Error ("Failed to reset password");
+    if (!response.ok) {
+      throw new Error("Failed to reset password");
     }
     return await response.json();
   } catch (error) {
@@ -179,4 +183,4 @@ export const fetchMovieDetails = async (movieId) => {
     console.log(error);
     throw error;
   }
-}
+};
