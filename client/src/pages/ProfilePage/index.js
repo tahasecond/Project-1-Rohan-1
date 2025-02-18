@@ -2,28 +2,9 @@ import "./profilestyles.css";
 import logoImage from "../../assets/images/buzz.svg.png";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import PasswordResetPopup from "../../components/PasswordResetPopup";
-import { resetPassword } from "../../api";
 
 const ProfilePage = () => {
-  const [isPasswordResetOpen, setIsPasswordResetOpen] = useState(false);
   const [email, setEmail] = useState("");
-
-  const handlePasswordResetSubmit = async ({ currentPassword, newPassword }) => {
-      try {
-          const response = await resetPassword( {currentPassword, newPassword} );
-
-          if (response.success) {
-              alert(response.message || 'Password reset successfully!');
-              setIsPasswordResetOpen(false);
-          } else {
-              alert(response.message || "Failed to reset password");
-          }
-
-      } catch (error) {
-          alert(error.message || "Failed to reset password");
-      }
-  };
 
   const fetchEmail = async () => {
     try {
@@ -86,26 +67,10 @@ const ProfilePage = () => {
                   <p>{email}</p>
                 </div>
               </div>
-              <div className="accountDetailBox">
-                <div className="userData">
-                  <h5>Password</h5>
-                </div>
-                <div className="changeInfoBtn">
-                  <button onClick={() => setIsPasswordResetOpen(true)}>
-                    Change Password
-                  </button>
-                </div>
-              </div>
             </div>
           </div>
         </div>
       </div>
-
-      <PasswordResetPopup
-        isOpen={isPasswordResetOpen}
-        onClose={() => setIsPasswordResetOpen(false)}
-        onSubmit={handlePasswordResetSubmit}
-      />
     </div>
   );
 };

@@ -4,10 +4,13 @@ import { registerUser } from '../../api';
 
 import "./styles.css";
 import logoImage from "../../assets/images/buzz.svg.png";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 function SignUp() {
     const [formData, setFormData] = useState({
         email: "",
+        birthday: null,
         password: ""
     })
 
@@ -17,6 +20,10 @@ function SignUp() {
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleDateChange = (date) => {
+        setFormData({ ...formData, birthday: date });
     };
 
     const handleSubmit = async (e) => {
@@ -57,7 +64,19 @@ function SignUp() {
             <form className = "form" onSubmit = {handleSubmit}>
                 <input type="email" name="email" placeholder="Email" onChange={handleChange} required />
                 <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
-                <button type="submit">Sign Up</button>
+                <DatePicker
+                    selected={formData.birthday}
+                    onChange={handleDateChange}
+                    name="birthday"
+                    placeholderText="Select your birthday"
+                    dateFormat="yyyy/MM/dd"
+                    showYearDropdown
+                    scrollableYearDropdown
+                    yearDropdownItemNumber={100}
+                    showMonthDropdown
+                    required
+                />
+                <button type="submit" disabled={loading}>Sign Up</button>
                 <div> Already have an account? <Link to = "/login"> Sign In </Link> </div>
             </form>
         </div> 
