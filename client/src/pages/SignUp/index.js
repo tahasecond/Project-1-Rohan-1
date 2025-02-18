@@ -85,7 +85,7 @@ function SignUp() {
           onChange={handleChange}
           required
         />
-        {/* <DatePicker
+        <DatePicker
                     selected={formData.birthday}
                     onChange={handleDateChange}
                     name="birthday"
@@ -96,7 +96,7 @@ function SignUp() {
                     yearDropdownItemNumber={100}
                     showMonthDropdown
                     required
-                /> */}
+                />
         <button type="submit" disabled={loading}>
           Sign Up
         </button>

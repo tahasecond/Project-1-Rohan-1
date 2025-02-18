@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './styles.css';
-// import { deleteReview } from '../../api';
+import { deleteReview } from '../../api';
 
 const DeleteReviewPopup = ({ isOpen, onClose, reviewId, onDeleteSuccess }) => {
   const [loading, setLoading] = useState(false);

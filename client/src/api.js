@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://gtmovies.onrender.com";
+const API_BASE_URL = "http://localhost:8000";
 const token = localStorage.getItem("token");
 
 export const registerUser = async (userData) => {
@@ -160,7 +160,7 @@ export const fetchMovieDetails = async (movieId) => {
 
       // If not found locally, fetch from TMDB
       response = await fetch(
-        `https://api.themoviedb.org/3/movie/${id}?api_key=b7e53cd3f6fdf95ed3ec34f7bbf27823`
+        `https://api.themoviedb.org/3/movie/${movieId}?api_key=b7e53cd3f6fdf95ed3ec34f7bbf27823`
       );
 
       if (!response.ok) {
@@ -215,3 +215,16 @@ export const resetPassword = async (formData) => {
     throw error;
   }
 }
+
+export const deleteReview = async (reviewId) => { //BACKEND LOGIC HERE - Taha 
+  try {
+    const response = await fetch(`/api/reviews/${reviewId}`, {
+      method: 'DELETE',
+    });
+    const data = await response.json();
+    return data; // Make sure your backend returns { success: true } on success.
+  } catch (error) {
+    console.error("Error deleting review:", error);
+    return { success: false, error };
+  }
+};
