@@ -81,3 +81,10 @@
     color: #ffffff;
     background-color: #252525;
 }
+.filled {
+    color: #ffd700; /* Gold color for filled stars */
+}
+
+.empty {
+    color: #ddd; /* Light gray color for empty stars */
+}
