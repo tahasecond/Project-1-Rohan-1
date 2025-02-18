@@ -4,20 +4,25 @@ import NavBar from "../../components/NavBar";
 
 const MyMoviesPage = () => {
   const [movies, setMovies] = useState([]);
+  const [total, setTotal] = useState();
   const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchMovies = async () => {
       try {
         // First, get the user email using the token
-        const emailResponse = await fetch(`http://localhost:8000/api/email/${token}/`);
+        const emailResponse = await fetch(
+          `http://localhost:8000/api/email/${token}/`
+        );
         if (!emailResponse.ok) throw new Error("Failed fetching user email");
 
         const emailData = await emailResponse.json();
         const userEmail = emailData.user;
 
         // Next, fetch the movie orders for the user
-        const response = await fetch(`http://localhost:8000/api/orders/${userEmail}/`);
+        const response = await fetch(
+          `http://localhost:8000/api/orders/${userEmail}/`
+        );
         const data = await response.json();
 
         if (data.success) {
@@ -43,7 +48,14 @@ const MyMoviesPage = () => {
     document.body.removeChild(link);
   };
 
-  
+  useEffect(() => {
+    calculateTotal();
+  }, [movies]);
+
+  const calculateTotal = () => {
+    const count = movies.length; // No need for a loop, just use length
+    setTotal(count * 10);
+  };
 
   return (
     <div className="my-movies-page">
@@ -51,31 +63,47 @@ const MyMoviesPage = () => {
       <div className="movies-content">
         <h1>My Movies</h1>
         {movies.length > 0 ? (
-          <div className="movies-grid">
-            {movies.map((order, index) => (
-              <div key={index} className="movie-card">
-                <div className="movie-info">
-                  {order.image && order.image !== "0" ? (
-                    <img
-                      src={order.image}
-                      alt={order.movie_title || "Untitled Movie"}
-                      className="movie-poster"
-                    />
-                  ) : (
-                    <div className="no-image">No Image Available</div>
-                  )}
-                  <h3>
-                    {order.movie_title && order.movie_title !== "0"
-                      ? order.movie_title
-                      : "Untitled Movie"}
-                  </h3>
+          <>
+            <div className="movies-grid">
+              {movies.map((order, index) => (
+                <div key={index} className="movie-card">
+                  <div className="movie-info">
+                    {order.image && order.image !== "0" ? (
+                      <img
+                        src={order.image}
+                        alt={order.movie_title || "Untitled Movie"}
+                        className="movie-poster"
+                      />
+                    ) : (
+                      <div className="no-image">No Image Available</div>
+                    )}
+
+                    {order.timestamp && (
+                      <p className="order-time">
+                        Ordered on: {order.timestamp.substring(0, 10)}
+                      </p>
+                    )}
+
+                    <h3>
+                      {order.movie_title && order.movie_title !== "0"
+                        ? order.movie_title
+                        : "Untitled Movie"}
+                    </h3>
+                  </div>
+                  <div className="btnContainer">
+                    <button onClick={() => downloadImage(order.image)}>
+                      Download
+                    </button>
+                  </div>
                 </div>
-                <div className="btnContainer">
-                  <button onClick={() => downloadImage(order.image)}>Download</button>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+
+            {/* Total Spent Calculation */}
+            <div className="total-spent">
+              <h2>Total Spent: ${total}</h2>
+            </div>
+          </>
         ) : (
           <div className="no-movies">
             <p>You haven't ordered any movies yet.</p>
