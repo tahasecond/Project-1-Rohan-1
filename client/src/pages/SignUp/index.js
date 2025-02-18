@@ -4,8 +4,8 @@ import { registerUser } from "../../api";
 
 import "./styles.css";
 import logoImage from "../../assets/images/buzz.svg.png";
-//import DatePicker from "react-datepicker";
-//import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 function SignUp() {
   const [formData, setFormData] = useState({
