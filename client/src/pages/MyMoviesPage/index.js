@@ -9,21 +9,19 @@ const MyMoviesPage = () => {
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const emailResponse = await fetch(
-          `http://localhost:8000/api/email/${token}/`
-        );
+        // First, get the user email using the token
+        const emailResponse = await fetch(`http://localhost:8000/api/email/${token}/`);
         if (!emailResponse.ok) throw new Error("Failed fetching user email");
 
         const emailData = await emailResponse.json();
         const userEmail = emailData.user;
 
-        const response = await fetch(
-          `http://localhost:8000/api/orders/${userEmail}/`
-        );
+        // Next, fetch the movie orders for the user
+        const response = await fetch(`http://localhost:8000/api/orders/${userEmail}/`);
         const data = await response.json();
 
         if (data.success) {
-          setMovies(data.orders); // Set movies from the order data
+          setMovies(data.orders);
         } else {
           console.error("Error fetching movies:", data.message);
         }
@@ -33,63 +31,57 @@ const MyMoviesPage = () => {
     };
 
     fetchMovies();
-  }, []);
+  }, [token]);
 
+  // Download the image for the order
   const downloadImage = (imageUrl) => {
     const link = document.createElement("a");
-    link.href = imageUrl; // Image URL
-    link.download = imageUrl.split("/").pop(); // Suggests file name from the URL
+    link.href = imageUrl;
+    link.download = imageUrl.split("/").pop();
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
-  const goHome = () => {
-    window.location.href = "http://localhost:8000/"; // Navigate to homepage
-  };
+  
 
   return (
-    <div
-      className="container"
-      style={{ flexDirection: "column", backgroundColor: "white" }}
-    >
-      <div className="pageHeader">
+    <div className="my-movies-page">
+      <NavBar />
+      <div className="movies-content">
         <h1>My Movies</h1>
-        <button onClick={goHome} className="homeButton">
-          Back to Homepage
-        </button>
-      </div>
-      <div className="moviesGrid">
-        {movies.map((order, index) => (
-          <div key={index} className="movieContainer">
-            <div className="movie">
-              {order.image && order.image !== "0" ? (
-                <img
-                  src={order.image}
-                  alt={order.movie_title || "Untitled Movie"}
-                  className="movieImage"
-                />
-              ) : (
-                <div className="noImage">No Image Available</div>
-              )}
-            </div>
-            {/* Movie Title */}
-            <div className="movieTitle">
-              {order.movie_title && order.movie_title !== "0"
-                ? order.movie_title
-                : "Untitled Movie"}
-            </div>
-            <div className="btnContainer">
-              <button onClick={() => downloadImage(order.image)}>
-                Download
-              </button>
-            </div>
+        {movies.length > 0 ? (
+          <div className="movies-grid">
+            {movies.map((order, index) => (
+              <div key={index} className="movie-card">
+                <div className="movie-info">
+                  {order.image && order.image !== "0" ? (
+                    <img
+                      src={order.image}
+                      alt={order.movie_title || "Untitled Movie"}
+                      className="movie-poster"
+                    />
+                  ) : (
+                    <div className="no-image">No Image Available</div>
+                  )}
+                  <h3>
+                    {order.movie_title && order.movie_title !== "0"
+                      ? order.movie_title
+                      : "Untitled Movie"}
+                  </h3>
+                </div>
+                <div className="btnContainer">
+                  <button onClick={() => downloadImage(order.image)}>Download</button>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-
-      <div className="extendedFooter">
-        <p>Engineered by Yellow Jacket Spirit</p>
+        ) : (
+          <div className="no-movies">
+            <p>You haven't ordered any movies yet.</p>
+            <p>Start exploring movies to see them here!</p>
+          </div>
+        )}
       </div>
     </div>
   );
