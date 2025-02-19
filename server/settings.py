@@ -26,7 +26,11 @@ SECRET_KEY = "django-insecure-(-!ag!y&b(tu=pc-53ne)di+(&yp(1qfu2a(@s+s0-%)**%l&*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["gtmovies.onrender.com"]
+CSRF_TRUSTED_ORIGINS = ["https://gtmovies.onrender.com"]
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
 
 # Application definition
 INSTALLED_APPS = [
@@ -128,7 +132,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = "static/"
-
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "client/build/static")
 ]  # specifying static file directory
@@ -141,6 +145,3 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 TMDB_API_KEY = "b7e53cd3f6fdf95ed3ec34f7bbf27823"
 
 CORS_ALLOW_ALL_ORIGINS = True
-
-
-
