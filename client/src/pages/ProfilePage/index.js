@@ -11,7 +11,7 @@ const ProfilePage = () => {
     try {
       const token = localStorage.getItem("token");
       const emailResponse = await fetch(
-        `http://localhost:8000/api/email/${token}/`
+        `https://gtmovies.onrender.com/api/email/${token}/`
       );
       if (!emailResponse.ok) throw new Error("Failed fetching user email");
 

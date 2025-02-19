@@ -24,7 +24,7 @@ function MovieDetails({ setIsAuthenticated }) {
 
   const fetchMovies = async () => {
     try {
-      let response = await fetch(`http://localhost:8000/api/custommovies/${id}/`);
+      let response = await fetch(`https://gtmovies.onrender.com/api/custommovies/${id}/`);
       if (!response.ok) {
         console.warn("Movie not found locally, fetching from TMDB...");
         response = await fetch(
@@ -63,14 +63,14 @@ function MovieDetails({ setIsAuthenticated }) {
   const addToCart = async (movieTitle, movieId, movieImage, price) => {
     try {
       const emailResponse = await fetch(
-        `http://localhost:8000/api/email/${token}/`
+        `https://gtmovies.onrender.com/api/email/${token}/`
       );
       if (!emailResponse.ok) throw new Error("Failed fetching user email");
       const { user: userEmail } = await emailResponse.json();
 
       let movieData;
       const localMovieResponse = await fetch(
-        `http://localhost:8000/api/custommovies/${movieId}/`
+        `https://gtmovies.onrender.com/api/custommovies/${movieId}/`
       );
       if (localMovieResponse.ok) {
         movieData = await localMovieResponse.json();
@@ -93,7 +93,7 @@ function MovieDetails({ setIsAuthenticated }) {
       };
 
       const cartResponse = await fetch(
-        `http://localhost:8000/api/cart/${userEmail}/`,
+        `https://gtmovies.onrender.com/api/cart/${userEmail}/`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

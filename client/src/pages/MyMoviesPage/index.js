@@ -12,7 +12,7 @@ const MyMoviesPage = () => {
       try {
         // First, get the user email using the token
         const emailResponse = await fetch(
-          `http://localhost:8000/api/email/${token}/`
+          `https://gtmovies.onrender.com/api/email/${token}/`
         );
         if (!emailResponse.ok) throw new Error("Failed fetching user email");
 
@@ -21,7 +21,7 @@ const MyMoviesPage = () => {
 
         // Next, fetch the movie orders for the user
         const response = await fetch(
-          `http://localhost:8000/api/orders/${userEmail}/`
+          `https://gtmovies.onrender.com/api/orders/${userEmail}/`
         );
         const data = await response.json();
 

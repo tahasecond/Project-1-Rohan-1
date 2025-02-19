@@ -31,7 +31,7 @@ function SearchPage({ setIsAuthenticated }) {
     try {
       console.log("Fetching movies for:", query);
       const response = await fetch(
-        `http://localhost:8000/api/movies/?search=${query}`
+        `https://gtmovies.onrender.com/api/movies/?search=${query}`
       );
 
       if (!response.ok) {

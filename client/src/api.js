@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = "https://gtmovies.onrender.com";
 const token = localStorage.getItem("token");
 
 export const registerUser = async (userData) => {

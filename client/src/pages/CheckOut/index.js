@@ -27,7 +27,7 @@ const CheckOut = ({ setIsAuthenticated }) => {
   const clearCart = async () => {
     try {
       const emailResponse = await fetch(
-        `http://localhost:8000/api/email/${token}/`
+        `https://gtmovies.onrender.com/api/email/${token}/`
       );
       if (!emailResponse.ok) {
         throw new Error("Failed to fetch user email");
@@ -37,7 +37,7 @@ const CheckOut = ({ setIsAuthenticated }) => {
 
       for (const movie of cart.items) {
         const response = await fetch(
-          `http://localhost:8000/api/cart/${userEmail}/${movie.movie_id}/`,
+          `https://gtmovies.onrender.com/api/cart/${userEmail}/${movie.movie_id}/`,
           { method: "DELETE" }
         );
         if (!response.ok) {
@@ -56,7 +56,7 @@ const CheckOut = ({ setIsAuthenticated }) => {
     try {
       // Fetch user email
       const emailResponse = await fetch(
-        `http://localhost:8000/api/email/${token}/`
+        `https://gtmovies.onrender.com/api/email/${token}/`
       );
       if (!emailResponse.ok) {
         throw new Error("Failed to fetch user email");
@@ -66,7 +66,7 @@ const CheckOut = ({ setIsAuthenticated }) => {
 
       // Delete the movie from the cart
       const response = await fetch(
-        `http://localhost:8000/api/cart/${userEmail}/${movieId}/`,
+        `https://gtmovies.onrender.com/api/cart/${userEmail}/${movieId}/`,
         { method: "DELETE" }
       );
       if (!response.ok) {
@@ -84,7 +84,7 @@ const CheckOut = ({ setIsAuthenticated }) => {
     try {
       // Step 1: Fetch the user's wallet
       const walletResponse = await fetch(
-        `http://localhost:8000/api/wallet/${token}/`
+        `https://gtmovies.onrender.com/api/wallet/${token}/`
       );
       if (!walletResponse.ok) {
         throw new Error("Failed to fetch wallet");
@@ -106,7 +106,7 @@ const CheckOut = ({ setIsAuthenticated }) => {
 
       // Step 4: Delete all items from the user's cart
       const emailResponse = await fetch(
-        `http://localhost:8000/api/email/${token}/`
+        `https://gtmovies.onrender.com/api/email/${token}/`
       );
       if (!emailResponse.ok) {
         throw new Error("Failed to fetch user email");
@@ -117,7 +117,7 @@ const CheckOut = ({ setIsAuthenticated }) => {
       // Delete each movie in the cart
       for (let movie of cart.items) {
         const deleteResponse = await fetch(
-          `http://localhost:8000/api/cart/${userEmail}/${movie.movie_id}/`,
+          `https://gtmovies.onrender.com/api/cart/${userEmail}/${movie.movie_id}/`,
           { method: "DELETE" }
         );
         if (!deleteResponse.ok) {
@@ -128,7 +128,7 @@ const CheckOut = ({ setIsAuthenticated }) => {
       // Step 5: Update the user's wallet balance
       const updatedWalletBalance = currentWalletBalance - totalAmount;
       const updateWalletResponse = await fetch(
-        `http://localhost:8000/api/wallet/${token}/`,
+        `https://gtmovies.onrender.com/api/wallet/${token}/`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -141,7 +141,7 @@ const CheckOut = ({ setIsAuthenticated }) => {
 
       // Step 6: Create orders for the movies in the cart
       for (let movie of cart.items) {
-        const orderResponse = await fetch(`http://localhost:8000/api/order/`, {
+        const orderResponse = await fetch(`https://gtmovies.onrender.com/api/order/`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

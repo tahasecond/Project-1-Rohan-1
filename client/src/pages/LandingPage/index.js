@@ -15,7 +15,7 @@ function LandingPage({ isLoggedIn }) {
 
   const fetchMovies = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/custommovies/");
+      const response = await fetch("https://gtmovies.onrender.com/api/custommovies/");
       if (!response.ok) {
         throw new Error("Failed to fetch movies");
       }
