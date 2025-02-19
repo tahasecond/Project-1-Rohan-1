@@ -14,7 +14,6 @@ function SignUp() {
     password: "",
   });
 
-  const [error, setError] = useState("");
   const [loading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -28,13 +27,14 @@ function SignUp() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
     setIsLoading(true);
     console.log("Birthday:", formData.birthday, typeof formData.birthday);
+
     const formattedBirthday =
       formData.birthday instanceof Date
-        ? formData.birthday.toISOString().split("T")[0] // Converts to "YYYY-MM-DD"
+        ? formData.birthday.toISOString().split("T")[0]
         : null;
+
     const payload = {
       email: formData.email,
       password: formData.password,
@@ -43,16 +43,15 @@ function SignUp() {
 
     try {
       const response = await registerUser(payload);
+      
       if (response.success) {
         alert(response.message);
         navigate("/login");
       } else {
-        setError(response.message || "Registration failed, try again");
+        alert(response.message || "Registration failed, please try again");
       }
     } catch (error) {
-      setError(
-        "An error occurred during registration. Please try again later."
-      );
+      alert("An error occurred during registration. Please try again later.");
     } finally {
       setIsLoading(false);
     }
@@ -62,16 +61,6 @@ function SignUp() {
     <div className="loginBox">
       <h1> Sign Up </h1>
       <img src={logoImage} className="logo" alt="Buzz Logo" />
-
-      {error && (
-        <p style={{ color: "red" }}>
-          {error.includes("Email already exists")
-            ? "Email already exists"
-            : error.includes("Registration failed")
-            ? "Registration failed. Please check if you've filled in all the fields correctly."
-            : "Registration failed. Please try again"}
-        </p>
-      )}
 
       <form className="form" onSubmit={handleSubmit}>
         <input
@@ -104,8 +93,7 @@ function SignUp() {
           Sign Up
         </button>
         <div>
-          {" "}
-          Already have an account? <Link to="/login"> Sign In </Link>{" "}
+          Already have an account? <Link to="/login">Sign In</Link>
         </div>
       </form>
     </div>

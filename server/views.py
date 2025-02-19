@@ -19,33 +19,40 @@ def index(request):
     return render(request, "index.html")
 
 
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import status
+from .models import User, UserProfile
+from rest_framework.authtoken.models import Token
+from django.http import JsonResponse
+
 class RegistrationView(APIView):
     def post(self, request):
         try:
             email = request.data.get("email")
-            username = email
             password = request.data.get("password")
+            birthday = request.data.get("birthday")
 
             if User.objects.filter(email=email).exists():
                 return JsonResponse(
                     {"success": False, "message": "Email already exists"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-            
+
             user = User.objects.create_user(
-                username=username, email=email, password=password
+                username=email, email=email, password=password
             )
+
             token, created = Token.objects.get_or_create(user=user)
             if not created:
                 return JsonResponse(
                     {"success": False, "message": "Token already exists."},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-            
             user_profile = UserProfile.objects.create(
                 user = user,
-                birthday = request.data.get("birthday"),
-                wallet = 10.00
+                birthday = birthday,
+                wallet = 10.00 
             )
 
             return JsonResponse(
