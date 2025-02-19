@@ -4,13 +4,13 @@ import { resetPassword } from '../../api';
 
 import "./styles.css";
 import logoImage from "../../assets/images/buzz.svg.png";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 
-function ResetPassword( {email} ) {
+function ResetPassword() {
     const [formData, setFormData] = useState({
+        email: "",
         newpassword: "",
-        confirmnewpassword: ""
+        confirmnewpassword: "",
+        birthday: ""
     })
 
     const [loading, setIsLoading] = useState(false);
@@ -24,36 +24,39 @@ function ResetPassword( {email} ) {
         e.preventDefault();
         setIsLoading(true);
 
-        if (formData.newpassword == formData.confirmnewpassword){
-            try {
-                const response = await resetPassword({email: email, password: formData.newpassword });
+        if (formData.newpassword == formData.confirmnewpassword) {
+            try {   
+                const response = await resetPassword({ email: formData.email, password: formData.newpassword, birthday: formData.birthday });
                 if (response.success) {
                     alert(response.message);
                     navigate("/login");
                 } else {
-                    alert(response.message || "Incorrect credentials");
+                    alert(response.message || "Incorrect credentials. Please try again.");
                 }
             } catch (error) {
-                alert("An error occurred. Please try again later");
+                alert("An error occurred. Please try again later.");
                 console.error(error);
             } finally {
                 setIsLoading(false);
             }
-        } else {
-            alert("Passwords do not match. Try again.");
         }
     };
 
     return (
         <div className = 'loginBox'> 
-            <h1> Reset </h1> 
+            <h1> Forgot </h1> 
             <img src = {logoImage} className = "logo" alt = "Buzz Logo" />
             
 
             <form className = "form" onSubmit = {handleSubmit}>
+                <input type="email" name="email" placeholder="Email" onChange={handleChange} required />
+                <input type = "date" name = "birthday" placeholder = "Birthday" value = {formData.birthday} onChange = {handleChange} required />
                 <input type="password" name="newpassword" placeholder="New Password" onChange={handleChange} required />
                 <input type="password" name="confirmnewpassword" placeholder="Confirm New Password" onChange={handleChange} required />
-                <button type="submit" disabled={loading}> Reset </button>
+                <button type="submit" disabled={loading}>
+                    {loading ? "Verifying..." : "Verify"}
+                </button>
+                <div> Sign In <Link to = "/login"> Sign In </Link> </div>
             </form>
         </div> 
     )

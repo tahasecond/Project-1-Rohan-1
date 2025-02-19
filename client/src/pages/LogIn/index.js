@@ -57,7 +57,7 @@ function Login({ setIsLoggedIn }) {
                 <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
                 <button type="submit"> Sign In </button>
                 <div> Don't Have An Account? <Link to = "/signup"> Sign Up </Link> </div>
-                <div> Forgot Password? <Link to = "/forgotpassword"> Reset </Link> </div>
+                <div> Forgot Password? <Link to = "/resetpassword"> Reset </Link> </div>
             </form>
         </div>
     )

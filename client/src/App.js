@@ -1,4 +1,3 @@
-// App.js
 import "./App.css";
 import LandingPage from "./pages/LandingPage";
 import CheckOut from "./pages/CheckOut";
@@ -6,7 +5,6 @@ import MovieDetails from "./pages/MovieDetails";
 import SearchPage from "./pages/SearchPage";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
-import ForgotPassword from "./pages/ForgotPassword";
 import MyMoviesPage from "./pages/MyMoviesPage";
 import ProfilePage from "./pages/ProfilePage";
 import MyReviews from "./pages/MyReviews";
@@ -20,7 +18,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import { isAuthenticated } from "./api";
-import { CartProvider } from "./components/CartContext"; // Import our Cart Context Provider
+import { CartProvider } from "./components/CartContext";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(isAuthenticated());
@@ -46,10 +44,6 @@ function App() {
           <Route
             path="/signup"
             element={isLoggedIn ? <Navigate to="/" /> : <SignUp />}
-          />
-          <Route
-            path="/forgotpassword"
-            element={isLoggedIn ? <Navigate to="/" /> : <ForgotPassword />}
           />
           <Route
             path="/resetpassword"

@@ -185,9 +185,9 @@ export const fetchMovieDetails = async (movieId) => {
   }
 };
 
-export const forgotPassword = async (formData) => {
+export const resetPassword = async (formData) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/forgotpassword`, {
+    const response = await fetch(`${API_BASE_URL}/api/resetpassword/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -197,27 +197,6 @@ export const forgotPassword = async (formData) => {
 
     if (!response.ok) {
       throw new Error("Failed checking credentials");
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-};
-
-export const resetPassword = async (formData) => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/resetpassword`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed resetting password");
     }
 
     return await response.json();

@@ -458,36 +458,12 @@ class FetchUserReviews(APIView):
                 "message": "Failed to fetch user reviews"
             })
 
-class ForgotPassword(APIView):
-    def post(self, request):
-        try:
-            email = request.data.get("email")
-            birthday = request.data.get("birthday")
-
-            user = User.objects.get(email = email)
-            user_profile = get_object_or_404(UserProfile, user = user)
-            
-            if birthday == user_profile.birthday:
-                return Response({
-                    "successs": True,
-                    "message": "Verified to now reset password!"
-                })
-            
-            return Response({
-                "success": False,
-                "message": "Failed to verify credentials"
-            })
-        except Exception as e:
-            return Response({
-                "success": False,
-                "message": "Failed to verify forgot password credentials"
-            })
-
 class ResetPassword(APIView):
     def post(self, request):
         try:
             email = request.data.get("email")
             password = request.data.get("password")
+            birthday = request.data.get("birthday")
 
             try:
                 user = User.objects.get(email = email)
@@ -496,15 +472,24 @@ class ResetPassword(APIView):
                     {"success": False, "message": "User not found"},
                     status=status.HTTP_404_NOT_FOUND,
                 )
+            user_profile = get_object_or_404(UserProfile, user = user)
             
-            user.password = password
-            user.save()
-            return Response({
-                "success": True,
-                "message": "Updated password successfully"
-            })
+            if str(birthday) == str(user_profile.birthday):
+                user.set_password(password)
+                user.save()
+                return Response({
+                    "success": True,
+                    "message": "Updated password successfully"
+                })
+            
+            else:
+                return Response({
+                    "success": False,
+                    "message": "Failed to verify credentials. Please check your email and birthday."
+                }, status=400)
+
         except Exception as e:
             return Response({
                 "success": False,
-                "message": "Failed to reset password, unknown error occured"
+                "message": "Failed to verify/reset password"
             })
