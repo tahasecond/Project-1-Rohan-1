@@ -35,7 +35,7 @@ function MyReviews() {
             movie: {
               title: movieData?.title || "Unknown Movie",
               poster:
-                movieData.imgae ||
+                movieData.image ||
                 (movieData?.poster_path
                   ? `https://image.tmdb.org/t/p/w500${movieData.poster_path}`
                   : "/placeholder.jpg"),
