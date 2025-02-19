@@ -163,7 +163,7 @@ export const leaveReview = async (userData) => {
 export const fetchMovieDetails = async (movieId) => {
   try {
     const response = await fetch(
-      `http://api.themoviedb.org/3/movie/${movieId}?api_key=b7e53cd3f6fdf95ed3ec34f7bbf27823&language=en-US`
+      `https://api.themoviedb.org/3/movie/${movieId}?api_key=b7e53cd3f6fdf95ed3ec34f7bbf27823&language=en-US`
     );
 
     if (!response.ok) {
