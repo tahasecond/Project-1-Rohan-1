@@ -11,12 +11,11 @@ export const registerUser = async (userData) => {
       body: JSON.stringify(userData),
     });
 
-    const responseText = await response.text(); // Read response as text first
+    const responseText = await response.text();
 
     if (!response.ok) {
       console.error("Registration failed:", responseText);
 
-      // Try to parse JSON if possible, otherwise return the raw response
       try {
         const errorData = JSON.parse(responseText);
         throw new Error(errorData.message || "Registration failed");
@@ -25,7 +24,7 @@ export const registerUser = async (userData) => {
       }
     }
 
-    const data = JSON.parse(responseText); // Parse JSON safely
+    const data = JSON.parse(responseText);
 
     if (data.success) {
       localStorage.setItem("token", data.token);
@@ -76,7 +75,7 @@ export const CartUser = async (token) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Token ${token}`, // Send token in the Authorization header
+        Authorization: `Token ${token}`,
       },
     });
 
@@ -85,7 +84,7 @@ export const CartUser = async (token) => {
     }
 
     const data = await response.json();
-    return data; // Returns { user: email }
+    return data;
   } catch (error) {
     console.error(error);
     throw error;
@@ -169,7 +168,6 @@ export const fetchMovieDetails = async (movieId) => {
     if (!response.ok) {
       console.warn("Movie not found locally, fetching from TMDB...");
 
-      // If not found locally, fetch from TMDB
       response = await fetch(
         `https://api.themoviedb.org/3/movie/${movieId}?api_key=b7e53cd3f6fdf95ed3ec34f7bbf27823`
       );

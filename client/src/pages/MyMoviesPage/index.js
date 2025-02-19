@@ -10,7 +10,6 @@ const MyMoviesPage = () => {
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        // First, get the user email using the token
         const emailResponse = await fetch(
           `https://gtmovies.onrender.com/api/email/${token}/`
         );
@@ -19,7 +18,6 @@ const MyMoviesPage = () => {
         const emailData = await emailResponse.json();
         const userEmail = emailData.user;
 
-        // Next, fetch the movie orders for the user
         const response = await fetch(
           `https://gtmovies.onrender.com/api/orders/${userEmail}/`
         );
@@ -38,7 +36,6 @@ const MyMoviesPage = () => {
     fetchMovies();
   }, [token]);
 
-  // Download the image for the order
   const downloadImage = (imageUrl) => {
     const link = document.createElement("a");
     link.href = imageUrl;
@@ -53,7 +50,7 @@ const MyMoviesPage = () => {
   }, [movies]);
 
   const calculateTotal = () => {
-    const count = movies.length; // No need for a loop, just use length
+    const count = movies.length;
     setTotal(count * 10);
   };
 
@@ -99,7 +96,6 @@ const MyMoviesPage = () => {
               ))}
             </div>
 
-            {/* Total Spent Calculation */}
             <div className="total-spent">
               <h2>Total Spent: ${total}</h2>
             </div>

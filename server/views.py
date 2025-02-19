@@ -115,7 +115,6 @@ class LoginView(APIView):
 class EmailView(APIView):
     def get(self, request, token, format=None):
         try:
-            # Authenticate user using token
             user_token = Token.objects.get(key=token)
             user = user_token.user
             return JsonResponse({"user": user.email})
@@ -126,8 +125,8 @@ class EmailView(APIView):
 class CartView(APIView):
     def post(self, request, email):
         try:
-            data = json.loads(request.body)  # Load JSON data
-            print("Incoming data:", data)  # ✅ Debug log
+            data = json.loads(request.body)
+            print("Incoming data:", data)
 
             movie_id = data.get("movie_id")
             movie_title = data.get("movie_title")
@@ -136,7 +135,6 @@ class CartView(APIView):
 
             user = User.objects.get(email=email)
 
-            # Check if the movie is already in the cart
             existing_item = Cart.objects.filter(user=user, movie_id=movie_id).first()
 
             if existing_item:
@@ -144,7 +142,6 @@ class CartView(APIView):
                 existing_item.save()
                 return JsonResponse({"message": "Movie quantity updated"}, status=200)
 
-            # Create a new cart item
             cart_item = Cart.objects.create(
                 user=user,
                 movie_id=movie_id,
@@ -156,14 +153,14 @@ class CartView(APIView):
 
             print(
                 "Saved Cart Item:", cart_item.image
-            )  # ✅ Check if image is saved correctly
+            )
 
             return JsonResponse({"message": "Movie added to cart"}, status=201)
 
         except User.DoesNotExist:
             return JsonResponse({"error": "User not found"}, status=404)
         except Exception as e:
-            print("Error:", str(e))  # ✅ Log errors
+            print("Error:", str(e))
             return JsonResponse({"error": str(e)}, status=400)
 
     def get(self, request, email):
@@ -178,13 +175,13 @@ class CartView(APIView):
                 {
                     "movie_id": item.movie_id,
                     "movie_title": item.movie_title,
-                    "price": float(item.price),  # Ensure price is properly formatted
+                    "price": float(item.price),
                     "image": item.image,
                 }
                 for item in cart_items
             ]
 
-            print("Cart Data:", cart_data)  # ✅ Debugging log
+            print("Cart Data:", cart_data)
 
             return JsonResponse({"cart": cart_data}, status=200, safe=False)
 
@@ -208,9 +205,8 @@ class CartView(APIView):
             return JsonResponse({"error": str(e)}, status=400)
 
 
-# Creates the api json so that we can fetch it from frontend
 def get_movies(request):
-    query = request.GET.get("search", "")  # Get the search query from URL parameters
+    query = request.GET.get("search", "")
 
     if query:
         url = f"https://api.themoviedb.org/3/search/movie?api_key=b7e53cd3f6fdf95ed3ec34f7bbf27823&language=en-US&query={query}&page=1"
@@ -234,7 +230,7 @@ def get_movies(request):
                 if movie["backdrop_path"]
                 else None,
             }
-            for movie in data["results"]  # Return only the top 10 results
+            for movie in data["results"]
         ]
         return JsonResponse(movies, safe=False)
 
@@ -263,9 +259,9 @@ def get_movie_details(request, movie_id):
     return JsonResponse({"error": "Failed to fetch movie details"}, status=500)
 
 @api_view(["GET", "DELETE"])
-def movie_detail(request, id):  # ✅ Change movie_id to id
+def movie_detail(request, id): 
     try:
-        movie = Movie.objects.get(id=id)  # ✅ Match model field name
+        movie = Movie.objects.get(id=id) 
 
         if request.method == "GET":
             serializer = MovieSerializer(movie)
@@ -292,15 +288,11 @@ def movie_list(request):
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         elif request.method == "POST":
-            # Handling the movie data coming from TMDB
             movie_data = request.data
-            # Ensure the rating is a decimal (if it’s not)
             if "rating" in movie_data:
                 movie_data["rating"] = round(float(movie_data["rating"]), 1)
-            # Handle the backdrop URL, ensuring it’s correctly formatted
             if "backdrop" in movie_data and movie_data["backdrop"]:
                 movie_data["backdrop"] = movie_data["backdrop"].strip()
-            # Create the movie using the serializer
             serializer = MovieSerializer(data=movie_data)
             if serializer.is_valid():
                 serializer.save()
@@ -345,19 +337,17 @@ class CreateOrderView(APIView):
             movie_id = request.data.get("movie")
             movie_title = request.data.get(
                 "movie_title"
-            )  # Movie title from the frontend
-            image = request.data.get("image")  # Movie image URL from the frontend
+            ) 
+            image = request.data.get("image")  
 
-            # Get the user
             user = get_object_or_404(User, email=user_email)
 
-            # Create the order with the movie data
             order = Order.objects.create(
                 user=user,
-                movie_id=movie_id,  # Save the movie ID
-                movie_title=movie_title,  # Save the movie title
-                image=image,  # Save the movie image URL
-                timestamp=now(),  # Automatically set to current time
+                movie_id=movie_id,
+                movie_title=movie_title,
+                image=image,
+                timestamp=now(),
             )
             order.save()
 
@@ -379,7 +369,7 @@ class GetUserOrdersView(APIView):
             user = get_object_or_404(User, email=user_email)
             orders = Order.objects.filter(user=user).order_by(
                 "-timestamp"
-            )  # Latest orders first
+            )
             serializer = OrderSerializer(orders, many=True)
 
             return JsonResponse(

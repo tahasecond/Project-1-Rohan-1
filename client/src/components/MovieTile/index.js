@@ -12,8 +12,8 @@ const MovieTile = ({ movie }) => {
   return (
     <div className="movie-tile" onClick={handleClick}>
       <img
-        src={movie.image} //api call to get movie image
-        alt={movie.title} //api call to get movie title
+        src={movie.image}
+        alt={movie.title}
         className="movie-tile-image"
       />
       <div className="movie-tile-info">

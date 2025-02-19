@@ -13,20 +13,18 @@ function SearchPage({ setIsAuthenticated }) {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Extract search query from URL
   const searchParams = new URLSearchParams(location.search);
   const query = searchParams.get("q") || "";
 
-  // Fetch movies when query changes
   useEffect(() => {
     if (query) {
       fetchMovies(query);
     }
-  }, [query, location.search]); // Added `location.search` as a dependency
+  }, [query, location.search]);
 
   const fetchMovies = async (query) => {
-    setLoading(true); // Start loading
-    setError(null); // Reset error state
+    setLoading(true); 
+    setError(null); 
 
     try {
       console.log("Fetching movies for:", query);
@@ -39,12 +37,12 @@ function SearchPage({ setIsAuthenticated }) {
       }
 
       const data = await response.json();
-      setMovies(data); // Only take top 10 movies
+      setMovies(data);
     } catch (error) {
       console.error("Error fetching movies:", error);
       setError(error.message);
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false); 
     }
   };
 

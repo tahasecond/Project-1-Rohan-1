@@ -4,7 +4,7 @@ import { logoutUser } from "../../api";
 import logoImage from "../../assets/images/buzz.svg.png";
 import "./styles.css";
 import { FaUserCircle, FaShoppingCart } from "react-icons/fa";
-import { CartContext } from "../CartContext"; // Import the context
+import { CartContext } from "../CartContext";
 
 function NavBar() {
   const handleLogout = () => {
@@ -17,7 +17,6 @@ function NavBar() {
   const dropdownRef = useRef(null);
   const cartDropdownRef = useRef(null);
 
-  // Retrieve cart data from the context
   const { cart, updateCart } = useContext(CartContext);
 
   const toggleDropdown = () => {
@@ -30,7 +29,6 @@ function NavBar() {
     setIsDropdownOpen(false);
   };
 
-  // (Optional) If you still want to update the cart on mount, you can call updateCart here.
   useEffect(() => {
     updateCart();
   }, []);

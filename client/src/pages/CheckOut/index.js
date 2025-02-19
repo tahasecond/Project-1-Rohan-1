@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import NavBar from "../../components/NavBar";
 import "./styles.css";
-import { CartContext } from "../../components/CartContext"; // Import our Cart context
+import { CartContext } from "../../components/CartContext";
 
 const CheckOut = ({ setIsAuthenticated }) => {
   const [formData, setFormData] = useState({
@@ -15,11 +15,9 @@ const CheckOut = ({ setIsAuthenticated }) => {
     zipCode: "",
   });
 
-  // Use the shared cart state and updater
   const { cart, updateCart } = useContext(CartContext);
   const token = localStorage.getItem("token");
 
-  // On mount, update the cart data from the backend.
   useEffect(() => {
     updateCart();
   }, [updateCart]);
@@ -54,7 +52,6 @@ const CheckOut = ({ setIsAuthenticated }) => {
 
   const deleteFromCart = async (movieId) => {
     try {
-      // Fetch user email
       const emailResponse = await fetch(
         `https://gtmovies.onrender.com/api/email/${token}/`
       );
@@ -64,7 +61,6 @@ const CheckOut = ({ setIsAuthenticated }) => {
       const emailData = await emailResponse.json();
       const userEmail = emailData.user;
 
-      // Delete the movie from the cart
       const response = await fetch(
         `https://gtmovies.onrender.com/api/cart/${userEmail}/${movieId}/`,
         { method: "DELETE" }
@@ -73,7 +69,6 @@ const CheckOut = ({ setIsAuthenticated }) => {
         throw new Error("Failed to remove movie from cart");
       }
 
-      // Refresh the cart in the global context
       updateCart();
     } catch (error) {
       console.error("Error removing movie from cart:", error);
@@ -82,7 +77,6 @@ const CheckOut = ({ setIsAuthenticated }) => {
 
   const checkOut = async () => {
     try {
-      // Step 1: Fetch the user's wallet
       const walletResponse = await fetch(
         `https://gtmovies.onrender.com/api/wallet/${token}/`
       );
@@ -92,19 +86,16 @@ const CheckOut = ({ setIsAuthenticated }) => {
       const walletData = await walletResponse.json();
       const currentWalletBalance = walletData.wallet;
 
-      // Step 2: Calculate the total price of the cart
       const totalAmount = cart.items.reduce(
         (total, movie) => total + (movie.price || 0),
         0
       );
 
-      // Step 3: Check if the user has sufficient funds
       if (currentWalletBalance < totalAmount) {
         alert("Insufficient funds in your wallet.");
         return;
       }
 
-      // Step 4: Delete all items from the user's cart
       const emailResponse = await fetch(
         `https://gtmovies.onrender.com/api/email/${token}/`
       );
@@ -114,7 +105,6 @@ const CheckOut = ({ setIsAuthenticated }) => {
       const emailData = await emailResponse.json();
       const userEmail = emailData.user;
 
-      // Delete each movie in the cart
       for (let movie of cart.items) {
         const deleteResponse = await fetch(
           `https://gtmovies.onrender.com/api/cart/${userEmail}/${movie.movie_id}/`,
@@ -125,7 +115,6 @@ const CheckOut = ({ setIsAuthenticated }) => {
         }
       }
 
-      // Step 5: Update the user's wallet balance
       const updatedWalletBalance = currentWalletBalance - totalAmount;
       const updateWalletResponse = await fetch(
         `https://gtmovies.onrender.com/api/wallet/${token}/`,
@@ -139,16 +128,15 @@ const CheckOut = ({ setIsAuthenticated }) => {
         throw new Error("Failed to update wallet");
       }
 
-      // Step 6: Create orders for the movies in the cart
       for (let movie of cart.items) {
         const orderResponse = await fetch(`https://gtmovies.onrender.com/api/order/`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            user: userEmail, // Ensure this is correct
-            movie: movie.movie_id, // Send the movie ID
-            movie_title: movie.movie_title, // Send the movie title
-            image: movie.image, // Send the movie image URL (if available)
+            user: userEmail, 
+            movie: movie.movie_id, 
+            movie_title: movie.movie_title, 
+            image: movie.image,
           }),
         });
 
@@ -158,8 +146,6 @@ const CheckOut = ({ setIsAuthenticated }) => {
           throw new Error(`Failed to create order: ${errorData}`);
         }
       }
-
-      // Clear the cart after successful checkout by refreshing the global cart
       updateCart();
 
       alert("Purchase completed successfully!");

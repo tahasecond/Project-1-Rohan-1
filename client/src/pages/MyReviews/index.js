@@ -94,7 +94,6 @@ function MyReviews() {
         )}
       </div>
 
-      {/* Edit Review Popup */}
       {isEditPopupOpen && currentReview && (
         <EditReviewPopup
           isOpen={isEditPopupOpen}
@@ -104,7 +103,6 @@ function MyReviews() {
         />
       )}
 
-      {/* Delete Review Popup */}
       {isDeletePopupOpen && currentReview && (
         <DeleteReviewPopup
           isOpen={isDeletePopupOpen}

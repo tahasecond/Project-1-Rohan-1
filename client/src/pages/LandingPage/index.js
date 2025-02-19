@@ -5,13 +5,13 @@ import SearchBar from "../../components/SearchBar";
 import MovieTile from "../../components/MovieTile";
 
 function LandingPage({ isLoggedIn }) {
-  const [movies, setMovies] = useState([]); // setting up movie request
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
+  const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchMovies();
-  }, []); // request movies
+  }, []);
 
   const fetchMovies = async () => {
     try {
@@ -29,11 +29,11 @@ function LandingPage({ isLoggedIn }) {
         }))
       );
 
-      setLoading(false); // Set loading to false after data is fetched
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching movies:", error);
-      setError(error.message); // Set error state
-      setLoading(false); // Set loading to false if there's an error
+      setError(error.message);
+      setLoading(false);
     }
   };
 

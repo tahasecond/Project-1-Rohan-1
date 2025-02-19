@@ -40,21 +40,9 @@ function SignUp() {
       password: formData.password,
       birthday: formattedBirthday,
     };
-
-    try {
-      const response = await registerUser(payload);
-      
-      if (response.success) {
-        alert(response.message);
-        navigate("/login");
-      } else {
-        alert(response.message || "Registration failed, please try again");
-      }
-    } catch (error) {
-      alert("An error occurred during registration. Please try again later.");
-    } finally {
-      setIsLoading(false);
-    }
+    await registerUser(payload);
+    navigate("/login");
+    setIsLoading(false);
   };
 
   return (

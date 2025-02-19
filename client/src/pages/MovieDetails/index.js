@@ -4,7 +4,7 @@ import NavBar from "../../components/NavBar";
 import ReviewSection from "../../components/ReviewSection";
 import "./styles.css";
 import ReviewPopup from "../../components/ReviewPopup";
-import { CartContext } from "../../components/CartContext"; // Import the context
+import { CartContext } from "../../components/CartContext";
 
 function MovieDetails({ setIsAuthenticated }) {
   const [movie, setMovie] = useState(null);
@@ -14,7 +14,6 @@ function MovieDetails({ setIsAuthenticated }) {
   const [isReviewPopupOpen, setIsReviewPopupOpen] = useState(false);
   const token = localStorage.getItem("token");
 
-  // Access the updateCart function from our context
   const { updateCart } = useContext(CartContext);
 
   useEffect(() => {
@@ -107,10 +106,8 @@ function MovieDetails({ setIsAuthenticated }) {
         throw new Error("Failed adding movie to cart");
       }
 
-      // Optionally, you can process cartData here:
       const cartData = await cartResponse.json();
 
-      // Refresh the cart in the global context after a successful add
       updateCart();
     } catch (error) {
       console.error("Error:", error);

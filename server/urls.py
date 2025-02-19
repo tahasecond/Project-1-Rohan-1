@@ -48,5 +48,5 @@ urlpatterns = [
 
     re_path(
         r"^(?!api/).*", TemplateView.as_view(template_name="index.html")
-    ),  # serve index.html for all other routes
+    ),
 ]

@@ -70,7 +70,7 @@ ROOT_URLCONF = "server.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "client/build")],  # connecting to react
+        "DIRS": [os.path.join(BASE_DIR, "client/build")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -135,7 +135,7 @@ STATIC_URL = "static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "client/build/static")
-]  # specifying static file directory
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

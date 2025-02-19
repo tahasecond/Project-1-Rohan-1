@@ -6,16 +6,13 @@ function SearchBar({ onSearch }) {
   const [query, setQuery] = useState('');
   const navigate = useNavigate();
 
-  // Handle input changes and update state
   const handleInputChange = (event) => {
     setQuery(event.target.value);
   };
 
-  // When the form is submitted, prevent the default behavior
-  // and call the onSearch callback (if provided) with the current query.
   const handleSearch = (event) => {
     event.preventDefault();
-    if (query.trim()) {  // Only navigate if query is not empty
+    if (query.trim()) {
       navigate(`/search?q=${encodeURIComponent(query)}`);
     }
   };

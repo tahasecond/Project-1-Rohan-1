@@ -9,19 +9,16 @@ export function CartProvider({ children }) {
     totalMovies: 0,
   });
 
-  // This function fetches cart data from the backend
   const updateCart = async () => {
     const token = localStorage.getItem("token");
     if (!token) return;
 
     try {
-      // First, fetch user email
       const emailResponse = await fetch(`https://gtmovies.onrender.com/api/email/${token}/`);
       if (!emailResponse.ok) throw new Error("Failed to fetch user email");
       const { user: userEmail } = await emailResponse.json();
       if (!userEmail) throw new Error("User email not retrieved correctly");
 
-      // Now, fetch the cart data
       const response = await fetch(`https://gtmovies.onrender.com/api/cart/${userEmail}/`, {
         method: "GET",
       });
@@ -44,7 +41,6 @@ export function CartProvider({ children }) {
     }
   };
 
-  // On mount, fetch the initial cart data.
   useEffect(() => {
     updateCart();
   }, []);
