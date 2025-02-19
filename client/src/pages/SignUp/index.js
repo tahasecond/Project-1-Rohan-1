@@ -29,21 +29,28 @@ function SignUp() {
     e.preventDefault();
     setIsLoading(true);
     console.log("Birthday:", formData.birthday, typeof formData.birthday);
-
-    const formattedBirthday =
-      formData.birthday instanceof Date
-        ? formData.birthday.toISOString().split("T")[0]
-        : null;
-
-    const payload = {
-      email: formData.email,
-      password: formData.password,
-      birthday: formattedBirthday,
-    };
-    await registerUser(payload);
-    navigate("/login");
-    setIsLoading(false);
+  
+    try {
+      const formattedBirthday =
+        formData.birthday instanceof Date
+          ? formData.birthday.toISOString().split("T")[0]
+          : null;
+  
+      const payload = {
+        email: formData.email,
+        password: formData.password,
+        birthday: formattedBirthday,
+      };
+  
+      await registerUser(payload);
+    } catch (error) {
+      console.error("Error during registration:", error);
+    } finally {
+      navigate("/login");
+      setIsLoading(false);
+    }
   };
+  
 
   return (
     <div className="loginBox">
