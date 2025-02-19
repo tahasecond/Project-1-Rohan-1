@@ -34,9 +34,11 @@ function MyReviews() {
             rating: review.rating,
             movie: {
               title: movieData?.title || "Unknown Movie",
-              poster: movieData?.poster_path
-                ? `https://image.tmdb.org/t/p/w500${movieData.poster_path}`
-                : "/placeholder.jpg",
+              poster:
+                movieData.imgae ||
+                (movieData?.poster_path
+                  ? `https://image.tmdb.org/t/p/w500${movieData.poster_path}`
+                  : "/placeholder.jpg"),
             },
           };
         })
@@ -76,10 +78,20 @@ function MyReviews() {
                   rating={review.rating}
                 />
                 <div className="review-actions">
-                  <button onClick={() => { setCurrentReview(review); setIsEditPopupOpen(true); }}>
+                  <button
+                    onClick={() => {
+                      setCurrentReview(review);
+                      setIsEditPopupOpen(true);
+                    }}
+                  >
                     Edit Review
                   </button>
-                  <button onClick={() => { setCurrentReview(review); setIsDeletePopupOpen(true); }}>
+                  <button
+                    onClick={() => {
+                      setCurrentReview(review);
+                      setIsDeletePopupOpen(true);
+                    }}
+                  >
                     Delete Review
                   </button>
                 </div>
