@@ -206,16 +206,44 @@ export const resetPassword = async (formData) => {
   }
 };
 
-export const deleteReview = async (reviewId) => {
-  //BACKEND LOGIC HERE - Taha
+export const deleteReview = async (formData) => {
   try {
-    const response = await fetch(`/api/reviews/${reviewId}`, {
-      method: "DELETE",
+    const response = await fetch(`${API_BASE_URL}/api/deletereview/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData)
     });
-    const data = await response.json();
-    return data; // Make sure your backend returns { success: true } on success.
+
+    if (!response.ok) {
+      throw new Error("Failed deleting review");
+    }
+
+    return await response.json();
   } catch (error) {
     console.error("Error deleting review:", error);
-    return { success: false, error };
+    throw error;
   }
 };
+
+export const editReview = async (formData) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/editreview/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData)
+    })
+
+    if (!response.ok) {
+      throw new Error("Failed editing review")
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error editing review", error);
+    throw error;
+  }
+}

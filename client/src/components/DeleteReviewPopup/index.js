@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import './styles.css';
 import { deleteReview } from '../../api';
 
-const DeleteReviewPopup = ({ isOpen, onClose, reviewId, onDeleteSuccess }) => {
+const DeleteReviewPopup = ({ isOpen, onClose, review, onDelete }) => {
   const [loading, setLoading] = useState(false);
 
-  const handleDelete = async () => { //BACKEND LOGIC HERE - Taha 
+  const handleDelete = async () => {
     setLoading(true);
     try {
-      const response = await deleteReview(reviewId);
+      const response = await deleteReview({ reviewId: review.review_id });
       if (response.success) {
-        // Inform the parent component that deletion was successful.
-        onDeleteSuccess();
+        onDelete();
+        onClose();
       } else {
         alert("Error deleting review");
       }
@@ -20,7 +20,6 @@ const DeleteReviewPopup = ({ isOpen, onClose, reviewId, onDeleteSuccess }) => {
       alert("Failed to delete review. Please try again.");
     } finally {
       setLoading(false);
-      onClose();
     }
   };
 

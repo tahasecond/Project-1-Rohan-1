@@ -13,6 +13,7 @@ from server.serializers import MovieSerializer, OrderSerializer
 from django.utils.timezone import now
 from rest_framework.authentication import TokenAuthentication
 from django.contrib.auth.hashers import check_password
+from django.db.models import ObjectDoesNotExist
 
 def index(request):
     return render(request, "index.html")
@@ -493,3 +494,29 @@ class ResetPassword(APIView):
                 "success": False,
                 "message": "Failed to verify/reset password"
             })
+
+class DeleteReview(APIView):
+    def post(self, request):
+        try:
+            id = request.data.get("reviewId")
+            review = Review.objects.get(id=id)
+            review.delete()
+            return Response({"success": True, "message": "Deleted review"})
+        except ObjectDoesNotExist:
+            return Response({"success": False, "message": "Review not found"}, status=404)
+        except Exception as e:
+            return Response({"success": False, "message": "Failed to delete review"}, status=500)
+
+class EditReview(APIView):
+    def post(self, request):
+        try:
+            id = request.data.get("id")
+            review = Review.objects.get(id=id)
+            review.comment = request.data.get("comment", review.comment)
+            review.rating = request.data.get("rating", review.rating)
+            review.save()
+            return Response({"success": True, "message": "Edited review"})
+        except ObjectDoesNotExist:
+            return Response({"success": False, "message": "Review not found"}, status=404)
+        except Exception as e:
+            return Response({"success": False, "message": "Failed to edit review"}, status=500)

@@ -4,13 +4,11 @@ import ReviewBox from "../../components/ReviewBox";
 import EditReviewPopup from "../../components/EditReviewPopup";
 import DeleteReviewPopup from "../../components/DeleteReviewPopup";
 import "./styles.css";
-
-import { fetchUserReviews, fetchMovieDetails, deleteReview } from "../../api";
+import { fetchUserReviews, fetchMovieDetails } from "../../api";
 
 function MyReviews() {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
-  // State to handle popup visibility and the review being edited/deleted
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
   const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
   const [currentReview, setCurrentReview] = useState(null);
@@ -30,7 +28,10 @@ function MyReviews() {
         response.reviews.map(async (review) => {
           const movieData = await fetchMovieDetails(review.movieId);
           return {
-            ...review,
+            review_id: review.review_id,
+            movieId: review.movieId,
+            comment: review.comment,
+            rating: review.rating,
             movie: {
               title: movieData?.title || "Unknown Movie",
               poster: movieData?.poster_path
@@ -46,46 +47,6 @@ function MyReviews() {
       console.error(error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  // Opens the edit popup with the selected review
-  const handleEditClick = (review) => {
-    setCurrentReview(review);
-    setIsEditPopupOpen(true);
-  };
-
-  // Opens the delete popup with the selected review
-  const handleDeleteClick = (review) => {
-    setCurrentReview(review);
-    setIsDeletePopupOpen(true);
-  };
-
-  // Update the review in the list after editing
-  const handleEditUpdate = (updatedReview) => {
-    setReviews(
-      reviews.map((review) =>
-        review.review_id === updatedReview.review_id ? updatedReview : review
-      )
-    );
-  };
-
-  // Confirm deletion of the review
-  const handleDeleteConfirm = async () => {
-    try {
-      const response = await deleteReview(currentReview.review_id);
-      if (response.success) {
-        alert("Review deleted successfully!");
-        setReviews(
-          reviews.filter(
-            (review) => review.review_id !== currentReview.review_id
-          )
-        );
-        setIsDeletePopupOpen(false);
-      }
-    } catch (error) {
-      console.error("Error deleting review:", error);
-      alert("Failed to delete review. Please try again.");
     }
   };
 
@@ -115,10 +76,10 @@ function MyReviews() {
                   rating={review.rating}
                 />
                 <div className="review-actions">
-                  <button onClick={() => handleEditClick(review)}>
+                  <button onClick={() => { setCurrentReview(review); setIsEditPopupOpen(true); }}>
                     Edit Review
                   </button>
-                  <button onClick={() => handleDeleteClick(review)}>
+                  <button onClick={() => { setCurrentReview(review); setIsDeletePopupOpen(true); }}>
                     Delete Review
                   </button>
                 </div>
@@ -139,7 +100,7 @@ function MyReviews() {
           isOpen={isEditPopupOpen}
           onClose={() => setIsEditPopupOpen(false)}
           review={currentReview}
-          onUpdate={handleEditUpdate}
+          onUpdate={fetchReviews}
         />
       )}
 
@@ -148,7 +109,8 @@ function MyReviews() {
         <DeleteReviewPopup
           isOpen={isDeletePopupOpen}
           onClose={() => setIsDeletePopupOpen(false)}
-          onDelete={handleDeleteConfirm}
+          review={currentReview}
+          onDelete={fetchReviews}
         />
       )}
     </div>
